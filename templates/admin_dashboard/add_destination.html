@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Destination - Admin Control Center{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 680px;">
+    <div class="tm-card p-4 shadow">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Add New Destination</h4>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Destination Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Munnar" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">District</label>
+                    <input type="text" name="district" class="form-control" placeholder="e.g. Idukki" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Category</label>
+                    <input type="text" name="category" class="form-control" placeholder="e.g. Hill Station" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Average Budget (₹)</label>
+                    <input type="number" name="average_budget" class="form-control" value="6500" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Highlights</label>
+                <input type="text" name="highlights" class="form-control" placeholder="e.g. Eravikulam National Park, Mattupetty Dam, Tea Museum">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Image URL</label>
+                <input type="url" name="image_url" class="form-control" placeholder="https://images.unsplash.com/...">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Enter scenic and travel details..."></textarea>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-tm-primary py-2 fw-bold">
+                    Publish Destination &rarr;
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

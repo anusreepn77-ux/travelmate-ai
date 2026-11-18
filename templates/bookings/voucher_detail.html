@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Voucher #{{ booking.voucher_code }} - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 720px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{% url 'booking_history' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to Bookings
+        </a>
+        <button class="btn btn-sm btn-tm-primary rounded-pill px-3" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i>Print Voucher
+        </button>
+    </div>
+
+    <!-- Official Booking Voucher Card (Figma Style) -->
+    <div class="tm-card p-4 shadow-lg border" style="background:#FFFFFF;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
+            <div>
+                <h4 class="fw-bold mb-0 text-primary">TravelMate<span style="color:#20A69A;">AI</span></h4>
+                <div class="text-muted small">Official Travel Confirmation & Check-in Pass</div>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-success-subtle text-success fs-6 fw-bold px-3 py-1 rounded-pill">
+                    <i class="bi bi-check-circle-fill me-1"></i>Confirmed
+                </span>
+                <div class="text-muted small mt-1">Voucher: <strong>{{ booking.voucher_code }}</strong></div>
+            </div>
+        </div>
+
+        <!-- Package & Booking Details -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+                <div class="text-muted small">Traveller Name:</div>
+                <div class="fw-bold fs-6">{{ booking.user.first_name|default:booking.user.username }} {{ booking.user.last_name }}</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-muted small">Package / Experience:</div>
+                <div class="fw-bold fs-6 text-primary">{{ booking.package.package_name|default:booking.destination.name }}</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-muted small">Travel Date:</div>
+                <div class="fw-bold">{{ booking.travel_date }}</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-muted small">Number of Guests:</div>
+                <div class="fw-bold">{{ booking.number_of_people }} Traveller(s)</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-muted small">Total Paid Amount:</div>
+                <div class="fs-5 fw-bold text-success">₹{{ booking.total_amount|floatformat:0 }}</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-muted small">Booking Timestamp:</div>
+                <div class="fw-bold">{{ booking.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+        </div>
+
+        <!-- QR Code Verification Block -->
+        <div class="text-center p-4 bg-light rounded-4 border mb-4">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TravelMateAI-Voucher-{{ booking.voucher_code }}-{{ booking.user.username }}-Paid"
+                 alt="QR Ticket Code" class="img-fluid mb-2 border p-2 bg-white rounded-3 shadow-sm" width="140" height="140">
+            <div class="fw-bold text-dark mt-1">VOUCHER CODE: {{ booking.voucher_code }}</div>
+            <p class="text-muted small mb-0">Present this QR code upon arrival at resort or transit checkpoints in Kerala for express check-in.</p>
+        </div>
+
+        <!-- Terms & Emergency Footer -->
+        <div class="pt-3 border-top d-flex justify-content-between text-muted" style="font-size: 0.78rem;">
+            <span>Emergency Support: <strong>112 / +91 98470 12345</strong></span>
+            <span>Eco-Verified Sustainable Journey</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

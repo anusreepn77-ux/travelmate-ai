@@ -1,71 +1,116 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}TravelMate AI - Home{% endblock %}
+{% block title %}TravelMate AI - Explore More. Plan Smarter. Travel Better.{% endblock %}
 
 {% block content %}
+<div class="container-fluid px-0">
 
-<section class="hero-section text-center">
+    <!-- Hero Section -->
+    <section class="hero-welcome text-center py-5">
+        <div class="container py-3" style="max-width: 820px;">
+            <span class="badge bg-light text-dark fw-bold mb-3 px-3 py-1 rounded-pill">
+                <i class="bi bi-stars text-warning me-1"></i>Next-Gen AI Travel Engineering
+            </span>
+            <h1 class="display-5 fw-bold mb-3">Your Perfect Kerala Journey, Engineered with AI</h1>
+            <p class="lead text-white-50 mb-4">
+                Personalized destination recommendations, instant Gemini-powered itineraries,
+                and an 11-tool intelligent assistant for weather, packing, and safety.
+            </p>
 
-    <div class="container py-5">
-
-        <h1 class="display-4 fw-bold">
-            Your Next Adventure Starts Here
-        </h1>
-
-        <p class="lead">
-            Discover destinations and plan your
-            perfect journey with AI.
-        </p>
-
-        <a href="{% url 'destination_list' %}"
-           class="btn btn-primary btn-lg mt-3">
-            Explore Destinations
-        </a>
-
-    </div>
-
-</section>
-
-<section class="container py-5">
-
-    <h2 class="text-center mb-4">
-        Explore Kerala
-    </h2>
-
-    <div class="row">
-
-        {% for destination in destinations %}
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card h-100 shadow-sm">
-
-                {% if destination.image %}
-                <img src="{{ destination.image.url }}"
-                     class="card-img-top"
-                     style="height:220px;object-fit:cover;">
-                {% endif %}
-
-                <div class="card-body">
-
-                    <h5>{{ destination.name }}</h5>
-
-                    <p>{{ destination.district }}</p>
-
-                    <a href="{% url 'destination_detail' destination.id %}"
-                       class="btn btn-outline-primary">
-                        View Details
-                    </a>
-
+            <!-- Search Form -->
+            <form action="{% url 'destination_list' %}" method="GET" class="position-relative mx-auto mb-3" style="max-width: 600px;">
+                <div class="input-group shadow-lg">
+                    <span class="input-group-text bg-white border-0 ps-3">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control form-control-lg border-0 ps-2" placeholder="Where do you want to travel? (e.g. Munnar, Wayanad)">
+                    <button class="btn btn-tm-accent px-4 fw-semibold" type="submit">Explore</button>
                 </div>
-            </div>
+            </form>
 
+            <div class="search-pills justify-content-center">
+                <a href="{% url 'destination_list' %}?district=Munnar" class="pill-chip">Munnar High Ranges</a>
+                <a href="{% url 'destination_list' %}?district=Alappuzha" class="pill-chip">Alappuzha Houseboats</a>
+                <a href="{% url 'destination_list' %}?category=Wildlife" class="pill-chip">Wayanad Rainforest</a>
+                <a href="{% url 'destination_list' %}?district=Vagamon" class="pill-chip">Vagamon Pine Meadows</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Pillars (Modules 1, 2, 3, 4) -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="tm-card p-4 h-100 shadow-sm text-center">
+                <div class="shortcut-icon bg-primary bg-opacity-10 text-primary mx-auto">
+                    <i class="bi bi-compass fs-3"></i>
+                </div>
+                <h5 class="fw-bold mb-2">ML Recommender</h5>
+                <p class="text-muted small">Content-based filtering matches your budget, preferred climate, and travel style to Kerala's top and hidden destinations.</p>
+                <a href="{% url 'assistant_hub' %}" class="btn btn-sm btn-link text-decoration-none fw-semibold">Try Recommender &rarr;</a>
+            </div>
         </div>
 
-        {% endfor %}
+        <div class="col-md-4">
+            <div class="tm-card p-4 h-100 shadow-sm text-center">
+                <div class="shortcut-icon bg-success bg-opacity-10 text-success mx-auto">
+                    <i class="bi bi-cpu fs-3"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Gemini Trip Planner</h5>
+                <p class="text-muted small">Day-wise, time-slotted itineraries with buffer hours, transit tickets, weather-adjusted slots, and dining spots.</p>
+                <a href="{% url 'assistant_hub' %}?tab=planning" class="btn btn-sm btn-link text-decoration-none fw-semibold">Generate Itinerary &rarr;</a>
+            </div>
+        </div>
 
+        <div class="col-md-4">
+            <div class="tm-card p-4 h-100 shadow-sm text-center">
+                <div class="shortcut-icon bg-danger bg-opacity-10 text-danger mx-auto">
+                    <i class="bi bi-shield-check fs-3"></i>
+                </div>
+                <h5 class="fw-bold mb-2">11 Smart Features</h5>
+                <p class="text-muted small">Real-time safety radar, weather-synced outfit recommendations, Malayalam dialect translator, and cost optimizers.</p>
+                <a href="{% url 'assistant_hub' %}" class="btn btn-sm btn-link text-decoration-none fw-semibold">Open AI Hub &rarr;</a>
+            </div>
+        </div>
     </div>
 
-</section>
+    <!-- Featured Destinations Grid -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="fw-bold mb-0">Featured Destinations</h4>
+            <span class="text-muted small">Discover the enchanting diversity of Kerala</span>
+        </div>
+        <a href="{% url 'destination_list' %}" class="btn btn-sm btn-tm-outline">View All Destinations &rarr;</a>
+    </div>
 
+    <div class="row g-4 mb-5">
+        {% for dest in destinations %}
+        <div class="col-md-6 col-lg-4">
+            <div class="tm-card tm-card-hover h-100">
+                <div class="position-relative">
+                    <img src="{{ dest.display_image }}" class="destination-card-img" alt="{{ dest.name }}">
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-white text-dark shadow-sm fw-bold">
+                        <i class="bi bi-star-fill text-warning me-1"></i>{{ dest.rating }}
+                    </span>
+                    <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 text-white">
+                        {{ dest.district }}
+                    </span>
+                </div>
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                        <h5 class="fw-bold mb-0">{{ dest.name }}</h5>
+                        <span class="fw-bold text-success fs-5">₹{{ dest.average_budget|floatformat:0 }}</span>
+                    </div>
+                    <p class="text-muted small text-truncate mb-3">{{ dest.highlights }}</p>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="badge-tag">{{ dest.category }}</span>
+                        <a href="{% url 'destination_detail' dest.id %}" class="btn btn-sm btn-tm-primary px-3">Explore &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
 {% endblock %}

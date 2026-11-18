@@ -1,51 +1,170 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Explore Kerala Destinations - TravelMate AI{% endblock %}
 
 {% block content %}
+<div class="container-fluid px-0">
 
-<div class="container py-5">
-
-    <h2 class="mb-4">Explore Destinations</h2>
-
-    <div class="row">
-
-        {% for destination in destinations %}
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card h-100 shadow-sm">
-
-                {% if destination.image %}
-                <img src="{{ destination.image.url }}"
-                     class="card-img-top"
-                     style="height:220px;object-fit:cover;">
-                {% endif %}
-
-                <div class="card-body">
-
-                    <h5>{{ destination.name }}</h5>
-
-                    <p>{{ destination.district }}</p>
-
-                    <p>Budget: ₹{{ destination.average_budget }}</p>
-
-                    <a href="{% url 'destination_detail' destination.id %}"
-                       class="btn btn-primary">
-                        Explore
-                    </a>
-
-                </div>
-            </div>
-
+    <!-- Header with Dynamic Weather Bar (Figma Screen 2) -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <h4 class="fw-bold mb-1">Explore Kerala Destinations</h4>
+            <p class="text-muted small mb-0">Discover curated misty hill stations, tranquil backwaters, and offbeat forest sanctuaries</p>
         </div>
 
-        {% empty %}
+        <!-- Live Weather Badges -->
+        <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small">
+                <i class="bi bi-brightness-high text-warning me-1"></i>Munnar 18°C • Sunny
+            </span>
+            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small">
+                <i class="bi bi-wind text-info me-1"></i>Alappuzha 28°C • Breeze
+            </span>
+            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small d-none d-lg-inline">
+                <i class="bi bi-cloud-sun text-secondary me-1"></i>Wayanad 22°C • Pleasant
+            </span>
+        </div>
+    </div>
 
-        <p>No destinations available yet.</p>
-
+    <!-- District Filter Chips Ribbon (Figma Screen 2) -->
+    <div class="d-flex gap-2 overflow-x-auto pb-2 mb-3">
+        {% for dist in all_districts %}
+        <a href="?district={{ dist }}&category={{ selected_category }}&sort={{ selected_sort }}&q={{ query }}"
+           class="badge text-decoration-none px-3 py-2 rounded-pill fw-semibold {% if selected_district == dist %}bg-tm-primary text-white{% else %}bg-white text-secondary border{% endif %}">
+           {% if dist == 'All' %}<i class="bi bi-grid me-1"></i>All Districts{% else %}<i class="bi bi-geo-alt me-1"></i>{{ dist }}{% endif %}
+        </a>
         {% endfor %}
+    </div>
 
+    <!-- Category Filter & Sort Toolbar -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="?district={{ selected_district }}&category=All&sort={{ selected_sort }}" class="btn btn-sm {% if selected_category == 'All' %}btn-tm-accent{% else %}btn-outline-secondary bg-white{% endif %} rounded-pill px-3">
+                All Filters
+            </a>
+            <a href="?district={{ selected_district }}&category=Hill%20Station&sort={{ selected_sort }}" class="btn btn-sm {% if selected_category == 'Hill Station' %}btn-tm-accent{% else %}btn-outline-secondary bg-white{% endif %} rounded-pill px-3">
+                <i class="bi bi-triangle me-1"></i>Hill Station
+            </a>
+            <a href="?district={{ selected_district }}&category=Backwaters&sort={{ selected_sort }}" class="btn btn-sm {% if selected_category == 'Backwaters' %}btn-tm-accent{% else %}btn-outline-secondary bg-white{% endif %} rounded-pill px-3">
+                <i class="bi bi-water me-1"></i>Backwaters
+            </a>
+            <a href="?district={{ selected_district }}&category=Wildlife&sort={{ selected_sort }}" class="btn btn-sm {% if selected_category == 'Wildlife' %}btn-tm-accent{% else %}btn-outline-secondary bg-white{% endif %} rounded-pill px-3">
+                <i class="bi bi-tree me-1"></i>Wildlife & Forest
+            </a>
+            <a href="?district={{ selected_district }}&category=Beach&sort={{ selected_sort }}" class="btn btn-sm {% if selected_category == 'Beach' %}btn-tm-accent{% else %}btn-outline-secondary bg-white{% endif %} rounded-pill px-3">
+                <i class="bi bi-sunset me-1"></i>Beach
+            </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            <span class="text-muted small fw-semibold">Showing {{ total_count }} places</span>
+            <form method="GET" class="d-inline">
+                <input type="hidden" name="district" value="{{ selected_district }}">
+                <input type="hidden" name="category" value="{{ selected_category }}">
+                <input type="hidden" name="q" value="{{ query }}">
+                <select name="sort" class="form-select form-select-sm border-0 shadow-sm rounded-pill px-3" onchange="this.form.submit()">
+                    <option value="popularity" {% if selected_sort == 'popularity' %}selected{% endif %}>Sort: Popularity (High to Low)</option>
+                    <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Sort: Highest Rated</option>
+                    <option value="budget_asc" {% if selected_sort == 'budget_asc' %}selected{% endif %}>Sort: Budget Friendly</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Destination Cards Grid (Figma Screen 2) -->
+    <div class="row g-4 mb-5">
+        {% for dest in destinations %}
+        <div class="col-md-6 col-lg-4">
+            <div class="tm-card tm-card-hover h-100 d-flex flex-column">
+                <div class="position-relative">
+                    <img src="{{ dest.display_image }}" class="destination-card-img" alt="{{ dest.name }}">
+
+                    <!-- Rating Badge -->
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-white text-dark shadow-sm fw-bold">
+                        <i class="bi bi-star-fill text-warning me-1"></i>{{ dest.rating }} <span class="text-muted fw-normal">({{ dest.reviews_count }})</span>
+                    </span>
+
+                    <!-- Category / Hidden Gem Badges -->
+                    <div class="position-absolute bottom-0 start-0 m-3 d-flex gap-1 flex-wrap">
+                        <span class="badge bg-dark bg-opacity-75 text-white">
+                            {{ dest.category }}
+                        </span>
+                        {% if dest.is_hidden_gem %}
+                        <span class="badge-hidden">
+                            <i class="bi bi-gem me-1"></i>Hidden Gem
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-0">{{ dest.name }}</h5>
+                            <span class="text-muted small"><i class="bi bi-geo-alt text-danger me-1"></i>{{ dest.district }}, Kerala</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-muted small" style="font-size: 0.75rem;">Est. {{ dest.estimated_days }} Days</span>
+                            <div class="fw-bold fs-5 text-primary">₹{{ dest.average_budget|floatformat:0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Top Highlights -->
+                    <div class="mb-3">
+                        <span class="text-muted small fw-semibold d-block mb-1">Top Highlights:</span>
+                        <div class="small text-secondary text-truncate">
+                            {{ dest.highlights }}
+                        </div>
+                    </div>
+
+                    <!-- Popularity & Season Status -->
+                    <div class="mt-auto pt-2 border-top">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge-demand">
+                                <i class="bi bi-fire me-1"></i>{{ dest.popularity_score }}% Demand
+                            </span>
+                            <span class="text-success small fw-semibold">
+                                <i class="bi bi-check2-circle me-1"></i>{{ dest.best_month }}
+                            </span>
+                        </div>
+
+                        <div class="d-grid">
+                            <a href="{% url 'destination_detail' dest.id %}" class="btn btn-tm-primary py-2 fw-semibold">
+                                View Details & Packages <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-search display-3 text-muted"></i>
+            <h5 class="fw-bold mt-3">No destinations found matching your filter</h5>
+            <p class="text-muted">Try resetting your district or category search filters.</p>
+            <a href="{% url 'destination_list' %}" class="btn btn-tm-outline">Reset Filters</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sticky Bottom Copilot Bar (Figma Screen 2) -->
+    <div class="fixed-bottom p-3 d-none d-md-block" style="z-index: 1020; pointer-events: none;">
+        <div class="container" style="max-width: 780px; pointer-events: auto;">
+            <div class="bg-dark text-white rounded-pill px-4 py-3 shadow-lg d-flex justify-content-between align-items-center border border-secondary">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="pulse-dot"></span>
+                    <div>
+                        <strong class="d-block small">Need a custom trip plan across Kerala?</strong>
+                        <span class="text-white-50" style="font-size: 0.78rem;">Let AI synthesize route, hotels, and time-slotted days</span>
+                    </div>
+                </div>
+                <a href="{% url 'assistant_hub' %}" class="btn btn-sm btn-tm-accent rounded-pill px-4 fw-bold">
+                    <i class="bi bi-stars me-1"></i>Launch AI Copilot
+                </a>
+            </div>
+        </div>
     </div>
 
 </div>
-
 {% endblock %}

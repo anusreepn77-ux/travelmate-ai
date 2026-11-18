@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Package - Admin Control Center{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 680px;">
+    <div class="tm-card p-4 shadow">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Create Travel Package</h4>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary">Cancel</a>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Destination</label>
+                <select name="destination_id" class="form-select" required>
+                    {% for dest in destinations %}
+                    <option value="{{ dest.id }}">{{ dest.name }} ({{ dest.district }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Package Name</label>
+                <input type="text" name="package_name" class="form-control" placeholder="e.g. Munnar 4-Day Highland Trek" required>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Duration (Days)</label>
+                    <input type="number" name="duration" class="form-control" value="3" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Package Price (₹)</label>
+                    <input type="number" name="price" class="form-control" value="12000" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Tier</label>
+                    <select name="tier" class="form-select">
+                        <option value="Standard">Standard</option>
+                        <option value="Luxury" selected>Luxury</option>
+                        <option value="Eco">Eco-Friendly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Package Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Overview of accommodation, transit, and sightseeing..." required></textarea>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-tm-accent py-2 fw-bold text-white">
+                    Publish Travel Package &rarr;
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

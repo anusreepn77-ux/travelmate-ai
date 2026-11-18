@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Control Center - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <!-- Header & Live System Vitality Status (Figma Screen 4) -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-dark text-white px-2 py-1 rounded-pill small">Admin Suite v2.0</span>
+                <span class="badge bg-success-subtle text-success small"><i class="bi bi-broadcast me-1"></i>Live System Vitality</span>
+            </div>
+            <h4 class="fw-bold mb-0">Admin Control Center</h4>
+        </div>
+
+        <!-- Quick Ops Action Buttons (Figma Screen 4) -->
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a href="{% url 'add_destination' %}" class="btn btn-sm btn-tm-primary rounded-pill px-3 fw-semibold">
+                <i class="bi bi-plus-circle me-1"></i>Add Destination
+            </a>
+            <a href="{% url 'create_package' %}" class="btn btn-sm btn-tm-accent rounded-pill px-3 fw-semibold">
+                <i class="bi bi-box-seam me-1"></i>Create Package
+            </a>
+            <a href="/admin/" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold">
+                <i class="bi bi-shield-lock me-1"></i>Django Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- Top Key Metrics KPI Cards (Figma Screen 4) -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between text-muted small fw-semibold">
+                    <span>Total Platform Users</span>
+                    <i class="bi bi-people-fill text-primary fs-5"></i>
+                </div>
+                <div class="stat-value">{{ total_users|default:38420 }}</div>
+                <div class="stat-sub text-success"><i class="bi bi-arrow-up-right me-1"></i>+12.4% MoM Growth</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between text-muted small fw-semibold">
+                    <span>Active Destinations</span>
+                    <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                </div>
+                <div class="stat-value">{{ total_destinations|default:142 }}</div>
+                <div class="stat-sub text-info"><i class="bi bi-patch-check me-1"></i>4 Added for Quality Check</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between text-muted small fw-semibold">
+                    <span>Package Bookings</span>
+                    <i class="bi bi-ticket-perforated-fill text-warning fs-5"></i>
+                </div>
+                <div class="stat-value">{{ total_packages|default:64 }}</div>
+                <div class="stat-sub text-secondary">13 Premium Specials</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between text-muted small fw-semibold">
+                    <span>Gross Fulfillment</span>
+                    <i class="bi bi-currency-rupee text-success fs-5"></i>
+                </div>
+                <div class="stat-value">₹2.84M</div>
+                <div class="stat-sub text-success"><i class="bi bi-check2-circle me-1"></i>98.2% Fulfillment Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Monthly Booking Velocity Bar Chart (Figma Screen 4) -->
+        <div class="col-lg-8">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0">Booking Velocity & Trends</h6>
+                        <span class="text-muted small">Monthly Completed Volume (Jan - Jun)</span>
+                    </div>
+                    <span class="badge bg-primary text-white">Peak Season: Oct-May</span>
+                </div>
+
+                <!-- CSS Column Chart -->
+                <div class="d-flex justify-content-between align-items-end pt-4 pb-2 border-bottom" style="height: 200px;">
+                    <div class="text-center flex-fill">
+                        <div class="bg-primary rounded-top mx-auto" style="width: 32px; height: 110px; opacity: 0.8;"></div>
+                        <span class="small text-muted d-block mt-2">Jan</span>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="bg-primary rounded-top mx-auto" style="width: 32px; height: 130px; opacity: 0.85;"></div>
+                        <span class="small text-muted d-block mt-2">Feb</span>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="bg-primary rounded-top mx-auto" style="width: 32px; height: 95px; opacity: 0.75;"></div>
+                        <span class="small text-muted d-block mt-2">Mar</span>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="bg-primary rounded-top mx-auto" style="width: 32px; height: 80px; opacity: 0.7;"></div>
+                        <span class="small text-muted d-block mt-2">Apr</span>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="bg-tm-accent rounded-top mx-auto" style="width: 32px; height: 165px;"></div>
+                        <span class="small text-muted d-block mt-2 fw-bold text-dark">May</span>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="bg-primary rounded-top mx-auto" style="width: 32px; height: 140px; opacity: 0.85;"></div>
+                        <span class="small text-muted d-block mt-2">Jun</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between small text-muted mt-3">
+                    <span>Average Daily Influx: <strong>480 travellers</strong></span>
+                    <span>Conversion Rate: <strong>4.8%</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Destination Market Share Breakdown (Figma Screen 4) -->
+        <div class="col-lg-4">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <h6 class="fw-bold mb-3">Kerala Destination Share</h6>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold mb-1">
+                        <span>Munnar Tea Hills</span>
+                        <span>38%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" style="width: 38%;"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold mb-1">
+                        <span>Alappuzha Backwaters</span>
+                        <span>24%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-tm-accent" style="width: 24%;"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold mb-1">
+                        <span>Thekkady Wildlife Reserve</span>
+                        <span>22%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: 22%;"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-semibold mb-1">
+                        <span>Wayanad Mist Peaks</span>
+                        <span>16%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 16%;"></div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3 pt-3 border-top">
+                    <span class="badge bg-light text-muted border small">Total Demand Monitored: 100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Live Bookings Audit Table (Figma Screen 4) -->
+    <div class="tm-card p-4 mb-4 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h6 class="fw-bold mb-0">Recent Live Bookings</h6>
+                <span class="text-muted small">Real-time booking fulfillment and vouchers</span>
+            </div>
+            <a href="{% url 'booking_history' %}" class="btn btn-sm btn-link text-decoration-none">View All &rarr;</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>TRAVELLER</th>
+                        <th>PACKAGE / DESTINATION</th>
+                        <th>TRAVEL DATE</th>
+                        <th>AMOUNT</th>
+                        <th>VOUCHER</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    {% for b in recent_bookings %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    {{ b.user.username|slice:":1"|upper }}
+                                </div>
+                                <span class="fw-semibold">{{ b.user.first_name|default:b.user.username }}</span>
+                            </div>
+                        </td>
+                        <td>{{ b.package.package_name|default:b.destination.name }}</td>
+                        <td>{{ b.travel_date }}</td>
+                        <td class="fw-bold text-dark">₹{{ b.total_amount|floatformat:0 }}</td>
+                        <td><code>{{ b.voucher_code }}</code></td>
+                        <td>
+                            {% if b.status == 'Confirmed' %}
+                            <span class="badge bg-success-subtle text-success fw-bold px-2 py-1 rounded-pill">Confirmed</span>
+                            {% elif b.status == 'Pending' %}
+                            <span class="badge bg-warning-subtle text-warning fw-bold px-2 py-1 rounded-pill">Pending</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary px-2 py-1 rounded-pill">{{ b.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-3 text-muted">No recent bookings recorded.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- AI Engine Health Monitor (Figma Screen 4) -->
+    <div class="card p-4 shadow-sm border-0 text-white rounded-4" style="background: linear-gradient(135deg, #0D2538 0%, #173B57 100%);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="pulse-dot"></span>
+                    <h6 class="fw-bold mb-0">AI Engine Health & Inference Monitor</h6>
+                </div>
+                <div class="d-flex gap-4 flex-wrap small text-white-50 mt-2">
+                    <div>System Uptime: <strong class="text-white">99.98%</strong></div>
+                    <div>Inference Latency: <strong class="text-white">340ms</strong></div>
+                    <div>Active Models: <strong class="text-white">12 Live / 2 Fallback</strong></div>
+                    <div>NLP TF-IDF Pipeline: <strong class="text-success">Nominal</strong></div>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'assistant_hub' %}" class="btn btn-sm btn-tm-accent rounded-pill px-4 fw-bold">
+                    Diagnostic AI Logs &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,37 +1,599 @@
+/* ==========================================================================
+   TravelMate AI - Production Design System & Global Styles
+   Matches Figma Prototype (Navy #173B57, Teal #20A69A, Canvas #F5F8FA)
+   ========================================================================== */
+
+:root {
+    --tm-primary: #173B57;
+    --tm-primary-dark: #0D2538;
+    --tm-accent: #20A69A;
+    --tm-accent-hover: #168B80;
+    --tm-accent-light: #EBF6F5;
+    --tm-bg: #F5F8FA;
+    --tm-surface: #FFFFFF;
+    --tm-text-main: #1E293B;
+    --tm-text-muted: #64748B;
+    --tm-border: #E2E8F0;
+    --tm-warning: #F59E0B;
+    --tm-success: #10B981;
+    --tm-danger: #EF4444;
+    --tm-shadow-sm: 0 2px 8px rgba(23, 59, 87, 0.05);
+    --tm-shadow: 0 4px 20px rgba(23, 59, 87, 0.08);
+    --tm-shadow-lg: 0 10px 30px rgba(23, 59, 87, 0.12);
+    --tm-radius: 16px;
+    --tm-radius-sm: 10px;
+}
+
 body {
-    background-color: #F5F8FA;
-    font-family: Arial, sans-serif;
+    background-color: var(--tm-bg);
+    color: var(--tm-text-main);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.hero-section {
-    background: linear-gradient(
-        rgba(23,59,87,0.85),
-        rgba(23,59,87,0.85)
-    ),
-    url('/static/images/travel-hero.jpg');
-
-    background-size: cover;
-    background-position: center;
-    color: white;
-    padding: 100px 20px;
+/* --------------------------------------------------------------------------
+   Navigation & Top Bar
+   -------------------------------------------------------------------------- */
+.navbar-tm {
+    background: var(--tm-primary);
+    padding: 0.85rem 1.5rem;
+    box-shadow: 0 2px 12px rgba(15, 38, 57, 0.15);
 }
 
-.card {
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: #FFFFFF !important;
+    letter-spacing: -0.3px;
+    text-decoration: none;
+}
+
+.brand-badge {
+    background: var(--tm-accent);
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.role-switcher {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 30px;
+    padding: 3px;
+}
+
+.role-btn {
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.role-btn.active {
+    background: #FFFFFF;
+    color: var(--tm-primary);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.role-btn:hover:not(.active) {
+    color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   App Layout & Sidebar
+   -------------------------------------------------------------------------- */
+.app-layout {
+    display: flex;
+    flex: 1;
+}
+
+.app-sidebar {
+    width: 260px;
+    background: #FFFFFF;
+    border-right: 1px solid var(--tm-border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+    .app-sidebar {
+        display: none;
+    }
+}
+
+.sidebar-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--tm-text-muted);
+    padding-left: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: var(--tm-text-main);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+    font-size: 1.15rem;
+    color: var(--tm-text-muted);
+}
+
+.sidebar-link:hover {
+    background: var(--tm-accent-light);
+    color: var(--tm-accent-hover);
+}
+
+.sidebar-link:hover i {
+    color: var(--tm-accent);
+}
+
+.sidebar-link.active {
+    background: var(--tm-primary);
+    color: #FFFFFF;
+}
+
+.sidebar-link.active i {
+    color: var(--tm-accent);
+}
+
+.badge-pill-accent {
+    background: var(--tm-accent-light);
+    color: var(--tm-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: auto;
+}
+
+.app-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .app-content {
+        padding: 1rem 0.85rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Cards & Surfaces
+   -------------------------------------------------------------------------- */
+.tm-card {
+    background: var(--tm-surface);
+    border-radius: var(--tm-radius);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: var(--tm-shadow-sm);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+}
+
+.tm-card:hover {
+    box-shadow: var(--tm-shadow);
+}
+
+.tm-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--tm-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons & CTAs
+   -------------------------------------------------------------------------- */
+.btn-tm-primary {
+    background: var(--tm-primary);
+    color: #FFFFFF;
     border: none;
-    border-radius: 14px;
-    transition: 0.3s;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 8px 18px;
+    transition: 0.2s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.btn-tm-primary:hover {
+    background: var(--tm-accent);
+    color: #FFFFFF;
 }
 
-.btn-primary {
-    background-color: #173B57;
-    border-color: #173B57;
+.btn-tm-accent {
+    background: var(--tm-accent);
+    color: #FFFFFF;
+    border: none;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 8px 18px;
+    transition: 0.2s;
 }
 
-.btn-primary:hover {
-    background-color: #20A69A;
-    border-color: #20A69A;
+.btn-tm-accent:hover {
+    background: var(--tm-accent-hover);
+    color: #FFFFFF;
+}
+
+.btn-tm-outline {
+    background: transparent;
+    border: 1.5px solid var(--tm-primary);
+    color: var(--tm-primary);
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 7px 16px;
+    transition: 0.2s;
+}
+
+.btn-tm-outline:hover {
+    background: var(--tm-primary);
+    color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   Hero & Search Bar
+   -------------------------------------------------------------------------- */
+.hero-welcome {
+    background: linear-gradient(135deg, #173B57 0%, #1e4d72 100%);
+    color: #FFFFFF;
+    border-radius: var(--tm-radius);
+    padding: 2.2rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--tm-shadow);
+}
+
+.search-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.pill-chip {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.pill-chip:hover {
+    background: #FFFFFF;
+    color: var(--tm-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Trip Tracker & Expense Pool
+   -------------------------------------------------------------------------- */
+.trip-monitor-card {
+    background: linear-gradient(145deg, #0F2639 0%, #173B57 100%);
+    color: #FFFFFF;
+    border-radius: var(--tm-radius);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-tm {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-tm-bar {
+    background: linear-gradient(90deg, #20A69A 0%, #10B981 100%);
+    height: 100%;
+    border-radius: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Smart Expeditions Shortcut Tiles
+   -------------------------------------------------------------------------- */
+.shortcut-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 576px) {
+    .shortcut-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.shortcut-tile {
+    background: #FFFFFF;
+    border-radius: var(--tm-radius-sm);
+    padding: 14px 10px;
+    text-align: center;
+    border: 1px solid var(--tm-border);
+    text-decoration: none;
+    color: var(--tm-text-main);
+    transition: 0.2s;
+}
+
+.shortcut-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--tm-shadow-sm);
+    color: var(--tm-accent);
+}
+
+.shortcut-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Ask TravelMate AI Box
+   -------------------------------------------------------------------------- */
+.ai-chat-box {
+    background: linear-gradient(140deg, #FFFFFF 0%, #F8FCFC 100%);
+    border: 1.5px solid var(--tm-accent-light);
+    border-radius: var(--tm-radius);
+    padding: 1.5rem;
+    box-shadow: var(--tm-shadow-sm);
+}
+
+.ai-pill-suggestion {
+    background: var(--tm-accent-light);
+    color: var(--tm-primary);
+    border: 1px solid rgba(32, 166, 154, 0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-block;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.ai-pill-suggestion:hover {
+    background: var(--tm-accent);
+    color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   Destination Cards
+   -------------------------------------------------------------------------- */
+.destination-card-img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: var(--tm-radius);
+    border-top-right-radius: var(--tm-radius);
+}
+
+.badge-tag {
+    background: #E2E8F0;
+    color: var(--tm-text-main);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.badge-demand {
+    background: #FEF3C7;
+    color: #92400E;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.badge-hidden {
+    background: #EDE9FE;
+    color: #5B21B6;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   System Vitality Ribbon & AI Hub Tabs
+   -------------------------------------------------------------------------- */
+.vitality-ribbon {
+    background: var(--tm-primary-dark);
+    color: #FFFFFF;
+    border-radius: var(--tm-radius-sm);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.vitality-metric {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10B981;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.ai-tab-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.ai-tab-btn {
+    background: #FFFFFF;
+    border: 1px solid var(--tm-border);
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--tm-text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: 0.2s;
+}
+
+.ai-tab-btn:hover {
+    color: var(--tm-primary);
+    border-color: var(--tm-primary);
+}
+
+.ai-tab-btn.active {
+    background: var(--tm-primary);
+    color: #FFFFFF;
+    border-color: var(--tm-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Timeline Spotlight (Munnar 48-Hour Generator)
+   -------------------------------------------------------------------------- */
+.timeline-track {
+    position: relative;
+    padding-left: 28px;
+    border-left: 2px solid var(--tm-accent-light);
+    margin-left: 12px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -35px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--tm-accent);
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 0 6px rgba(32, 166, 154, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Admin Dashboard & Charts
+   -------------------------------------------------------------------------- */
+.stat-card {
+    background: #FFFFFF;
+    border-radius: var(--tm-radius);
+    padding: 1.4rem;
+    border: 1px solid var(--tm-border);
+    box-shadow: var(--tm-shadow-sm);
+}
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--tm-primary);
+    line-height: 1.1;
+    margin: 8px 0;
+}
+
+.stat-sub {
+    font-size: 0.8rem;
+    color: var(--tm-text-muted);
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile App Bar
+   -------------------------------------------------------------------------- */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border-top: 1px solid var(--tm-border);
+    padding: 8px 12px;
+    z-index: 1050;
+    justify-content: space-around;
+}
+
+@media (max-width: 991px) {
+    .mobile-bottom-nav {
+        display: flex;
+    }
+    body {
+        padding-bottom: 70px;
+    }
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--tm-text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.mobile-nav-item i {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+}
+
+.mobile-nav-item.active {
+    color: var(--tm-accent);
 }

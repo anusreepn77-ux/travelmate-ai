@@ -1,46 +1,278 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Traveller Dashboard - TravelMate AI{% endblock %}
 
 {% block content %}
+<div class="container-fluid px-0">
 
-<div class="container py-5">
+    <!-- Welcome & Discovery Hero (Figma Screen 1 Header) -->
+    <section class="hero-welcome">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-light text-dark fw-bold mb-2 px-3 py-1 rounded-pill">
+                    <i class="bi bi-stars text-warning me-1"></i>AI-Powered Discovery
+                </span>
+                <h1 class="fw-bold mb-1">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                <p class="text-white-50 mb-3 fs-6">“Explore More. Plan Smarter. Travel Better.”</p>
 
-    <h2>Welcome, {{ user.username }}!</h2>
+                <!-- Natural Language Route Search Input -->
+                <form action="{% url 'destination_list' %}" method="GET" class="position-relative mt-2" style="max-width: 620px;">
+                    <div class="input-group shadow-lg">
+                        <span class="input-group-text bg-white border-0 ps-3">
+                            <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                        </span>
+                        <input type="text" name="q" class="form-control form-control-lg border-0 ps-2" placeholder="Where next? (e.g. 4-day road trip in Kerala)">
+                        <button class="btn btn-tm-accent px-4 fw-semibold" type="submit">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
 
-    <p>Plan your next adventure with TravelMate AI.</p>
+                <!-- Quick Filter Tag Chips -->
+                <div class="search-pills">
+                    <span class="text-white-50 small me-1">Trending:</span>
+                    <a href="{% url 'destination_list' %}?district=Alappuzha" class="pill-chip">Kerala Backwaters</a>
+                    <a href="{% url 'destination_list' %}?category=Hill%20Station" class="pill-chip">Hill Stations</a>
+                    <a href="{% url 'destination_list' %}?district=Wayanad" class="pill-chip">Wayanad Rainforest</a>
+                    <a href="{% url 'destination_list' %}?category=Beach" class="pill-chip">Beach Getaway</a>
+                </div>
+            </div>
 
-    <div class="row mt-4">
+            <div class="col-lg-4 d-none d-lg-block text-end">
+                <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=400&q=80" alt="Kerala Landscape" class="img-fluid rounded-4 shadow-lg border border-3 border-white" style="max-height: 200px; object-fit: cover;">
+            </div>
+        </div>
+    </section>
 
-        <div class="col-md-4 mb-3">
-            <div class="card p-4 shadow-sm">
-                <h5>Explore Destinations</h5>
-                <a href="{% url 'destination_list' %}"
-                   class="btn btn-primary">
-                    Explore
+    <div class="row g-4">
+        <!-- Left Column: Upcoming Trip, Expense Pool & Shortcuts -->
+        <div class="col-lg-8">
+
+            <!-- Upcoming Trip Card with Expense Pool Meter -->
+            <div class="trip-monitor-card mb-4 shadow">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-warning text-dark fw-bold px-2 py-1 rounded-pill mb-2">
+                            <i class="bi bi-clock-history me-1"></i>4 DAYS LEFT
+                        </span>
+                        <h4 class="fw-bold mb-1">Munnar & Tea Hills Trek</h4>
+                        <p class="text-white-50 small mb-0">Starts Friday Oct 24 • 4 DAYS / 3 NIGHTS • Circuit: Tea Valley Top Station</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill">
+                            <i class="bi bi-check-circle-fill me-1"></i>Confirmed
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Trip Expense Pool Widget -->
+                <div class="bg-black bg-opacity-25 rounded-3 p-3 mt-3 border border-light border-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small fw-semibold text-white-50"><i class="bi bi-wallet2 me-1"></i>Trip Expense Pool</span>
+                        <span class="small fw-bold text-info">Spent ₹{{ spent|floatformat:0 }} of Limit ₹{{ limit|floatformat:0 }} ({{ spent_pct }}%)</span>
+                    </div>
+                    <div class="progress-tm">
+                        <div class="progress-tm-bar" style="width: {{ spent_pct }}%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-white-50 small mt-2">
+                        <span>Safe Margin: ₹10,800 remaining</span>
+                        <a href="{% url 'assistant_hub' %}?tab=budget" class="text-info text-decoration-none small fw-semibold">
+                            Optimize Costs <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Expeditions: 4 Quick Shortcut Tiles -->
+            <div class="shortcut-grid">
+                <a href="{% url 'assistant_hub' %}?dest=Munnar&tab=planning" class="shortcut-tile">
+                    <div class="shortcut-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="fw-bold small">Best Time</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Weather & Crowd</div>
+                </a>
+
+                <a href="{% url 'assistant_hub' %}?tab=budget" class="shortcut-tile">
+                    <div class="shortcut-icon bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-graph-down-arrow"></i>
+                    </div>
+                    <div class="fw-bold small">Cost Optimizer</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Save ~32% on stays</div>
+                </a>
+
+                <a href="{% url 'assistant_hub' %}?tab=safety" class="shortcut-tile">
+                    <div class="shortcut-icon bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div class="fw-bold small">Safety & Alerts</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Landslide & SOS</div>
+                </a>
+
+                <a href="{% url 'destination_list' %}?district=Vagamon" class="shortcut-tile">
+                    <div class="shortcut-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-compass"></i>
+                    </div>
+                    <div class="fw-bold small">Hidden Spots</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Offbeat & Quiet</div>
                 </a>
             </div>
+
+            <!-- Featured Kerala Destinations -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Featured Kerala Destinations</h5>
+                <a href="{% url 'destination_list' %}" class="btn btn-sm btn-link text-decoration-none fw-semibold">View All (9) &rarr;</a>
+            </div>
+
+            <div class="row g-3 mb-4">
+                {% for dest in featured_destinations %}
+                <div class="col-md-6">
+                    <div class="tm-card tm-card-hover h-100">
+                        <div class="position-relative">
+                            <img src="{{ dest.display_image }}" class="destination-card-img" alt="{{ dest.name }}">
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 text-white">
+                                <i class="bi bi-star-fill text-warning me-1"></i>{{ dest.rating }}
+                            </span>
+                            <span class="position-absolute bottom-0 start-0 m-2 badge bg-info text-dark fw-bold">
+                                {{ dest.district }}
+                            </span>
+                        </div>
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="fw-bold mb-0">{{ dest.name }}</h6>
+                                <span class="fw-bold text-success">₹{{ dest.average_budget|floatformat:0 }}</span>
+                            </div>
+                            <p class="text-muted small mb-2 text-truncate">{{ dest.highlights }}</p>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                <span class="badge-tag">{{ dest.climate }}</span>
+                                <a href="{% url 'destination_detail' dest.id %}" class="btn btn-sm btn-tm-outline py-1 px-3">Explore &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- "Ask TravelMate AI" Copilot Widget (Figma Screen 1) -->
+            <div class="ai-chat-box mb-4">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary rounded-pill p-2"><i class="bi bi-robot text-white"></i></span>
+                    <div>
+                        <h6 class="fw-bold mb-0">Ask TravelMate AI Copilot</h6>
+                        <span class="text-muted small">Instant route legislation, food recommendations, weather alerts & packlists</span>
+                    </div>
+                </div>
+
+                <div class="mb-3 mt-2">
+                    <span class="ai-pill-suggestion" data-query="What to pack for Munnar trek this weekend?">
+                        🎒 What to pack for Munnar trek this weekend?
+                    </span>
+                    <span class="ai-pill-suggestion" data-query="Top quiet tea estate homestays with views?">
+                        🏡 Top quiet tea estate homestays with views?
+                    </span>
+                    <span class="ai-pill-suggestion" data-query="Authentic local Kerala fish curry stops en route">
+                        🍲 Authentic local Kerala fish curry stops en route
+                    </span>
+                </div>
+
+                <form id="askAiForm">
+                    <div class="input-group shadow-sm">
+                        <input type="text" id="aiQueryInput" class="form-control border-end-0 ps-3" placeholder="Ask anything about your route, safety, crowd, packing, homestays...">
+                        <button class="btn btn-tm-accent px-4 fw-semibold" type="submit">
+                            <span>Ask AI</span> <i class="bi bi-send-fill ms-1"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Dynamic Response Area -->
+                <div id="aiResponseBox" class="mt-3 p-3 bg-white rounded-3 border d-none">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="spinner-border spinner-border-sm text-info d-none" id="aiSpinner"></span>
+                        <span class="fw-bold text-primary small"><i class="bi bi-sparkles me-1 text-warning"></i>TravelMate AI Assistant:</span>
+                    </div>
+                    <div id="aiResponseText" class="small text-secondary" style="line-height: 1.6;"></div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card p-4 shadow-sm">
-                <h5>Travel Preferences</h5>
-                <a href="{% url 'preferences' %}"
-                   class="btn btn-primary">
-                    Set Preferences
+        <!-- Right Column: Active Booking Voucher & Quick Stats -->
+        <div class="col-lg-4">
+
+            <!-- Recent Booking Card with QR Code (Figma Screen 1) -->
+            <div class="tm-card p-3 mb-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-success-subtle text-success fw-bold px-2 py-1 rounded-pill">
+                        <i class="bi bi-shield-check me-1"></i>Confirmed Voucher
+                    </span>
+                    <span class="text-muted small fw-semibold">Voucher: TM-99412</span>
+                </div>
+
+                <div class="rounded-3 overflow-hidden position-relative mb-3">
+                    <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=600&q=80" alt="Resort" class="w-100" style="height: 140px; object-fit: cover;">
+                    <span class="position-absolute bottom-0 start-0 m-2 badge bg-dark bg-opacity-75 text-white small">
+                        Munnar Tea Valley
+                    </span>
+                </div>
+
+                <h6 class="fw-bold mb-1">Cloud Valley Plantation Retreat</h6>
+                <p class="text-muted small mb-2">Tea Valley Road, Munnar • Deluxe Mist Villa</p>
+
+                <div class="bg-light rounded-3 p-2 small mb-3">
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted">Check-in:</span>
+                        <span class="fw-semibold">Oct 24, 02:00 PM</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted">Guests:</span>
+                        <span class="fw-semibold">2 Adults (1 Room)</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span class="text-muted">Total Paid:</span>
+                        <span class="fw-bold text-success">₹18,400</span>
+                    </div>
+                </div>
+
+                <!-- Digital QR Ticket Preview -->
+                <div class="text-center p-3 border rounded-3 bg-white mb-3">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=TravelMate-Voucher-TM-99412-Munnar-Rahul" alt="QR Voucher" width="100" height="100" class="img-fluid mb-2">
+                    <div class="text-muted" style="font-size: 0.72rem;">Scan for contactless check-in at retreat</div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'voucher_detail' upcoming_booking.id|default:1 %}" class="btn btn-tm-primary btn-sm py-2">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF Voucher
+                    </a>
+                    <a href="{% url 'destination_detail' 1 %}" class="btn btn-outline-secondary btn-sm py-2">
+                        View Property Details
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Summary & Preferences Snapshot -->
+            <div class="tm-card p-3 shadow-sm">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" width="52" height="52" class="rounded-circle border border-2 border-info">
+                    <div>
+                        <h6 class="fw-bold mb-0">{{ user.first_name|default:user.username }} Sharma</h6>
+                        <span class="badge bg-info-subtle text-info small">{{ preference.travel_style|default:'Solo Explorer' }}</span>
+                    </div>
+                </div>
+
+                <div class="small text-secondary mb-3">
+                    <div class="mb-1"><strong>Affinity:</strong> {{ preference.preferred_category }} ({{ preference.preferred_climate }})</div>
+                    <div class="mb-1"><strong>Budget Focus:</strong> ₹{{ preference.budget|floatformat:0 }}</div>
+                    <div><strong>Interests:</strong> {{ preference.interests }}</div>
+                </div>
+
+                <a href="{% url 'preferences' %}" class="btn btn-sm btn-outline-primary w-100">
+                    <i class="bi bi-sliders me-1"></i>Update Preferences
                 </a>
             </div>
-        </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card p-4 shadow-sm">
-                <h5>AI Trip Planner</h5>
-                <button class="btn btn-secondary" disabled>
-                    Coming Soon
-                </button>
-            </div>
         </div>
-
     </div>
 
 </div>
-
 {% endblock %}

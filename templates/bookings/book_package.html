@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book {{ package.package_name }} - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 650px;">
+    <div class="tm-card p-4 shadow">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge bg-tm-accent p-2 rounded-circle"><i class="bi bi-shield-lock text-white"></i></span>
+            <div>
+                <h4 class="fw-bold mb-0">Complete Your Booking</h4>
+                <span class="text-muted small">TravelMate AI Verified Secure Reservation</span>
+            </div>
+        </div>
+
+        <div class="bg-light p-3 rounded-3 mb-4">
+            <h5 class="fw-bold text-primary mb-1">{{ package.package_name }}</h5>
+            <div class="small text-muted mb-2"><i class="bi bi-geo-alt text-danger me-1"></i>{{ package.destination.name }}, Kerala</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Duration: <strong>{{ package.duration }} Days / {{ package.duration_nights }} Nights</strong></span>
+                <span class="fs-5 fw-bold text-success">₹{{ package.price|floatformat:0 }} / person</span>
+            </div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Select Travel Date</label>
+                <input type="date" name="travel_date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Number of Travellers</label>
+                <select name="number_of_people" class="form-select" id="guestsSelect" onchange="updateTotal()">
+                    <option value="1">1 Person</option>
+                    <option value="2" selected>2 Persons</option>
+                    <option value="3">3 Persons</option>
+                    <option value="4">4 Persons</option>
+                    <option value="5">5+ Group</option>
+                </select>
+            </div>
+
+            <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold text-muted">Estimated Total Amount:</span>
+                <span class="fs-4 fw-bold text-success" id="totalAmountDisplay">₹{{ package.price|floatformat:0 }}</span>
+            </div>
+
+            <button type="submit" class="btn btn-tm-primary btn-lg w-100 fw-bold py-3 shadow">
+                <i class="bi bi-check2-circle me-1"></i>Confirm & Generate QR Voucher
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateTotal() {
+    const price = {{ package.price }};
+    const guests = parseInt(document.getElementById('guestsSelect').value);
+    const total = price * guests;
+    document.getElementById('totalAmountDisplay').textContent = '₹' + total.toLocaleString('en-IN');
+}
+updateTotal();
+</script>
+{% endblock %}

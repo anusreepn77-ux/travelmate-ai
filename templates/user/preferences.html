@@ -1,58 +1,76 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Travel Preferences - TravelMate AI{% endblock %}
 
 {% block content %}
-
-<div class="container py-5">
-
-    <div class="col-md-7 mx-auto card shadow p-4">
-
-        <h2>Travel Preferences</h2>
+<div class="container py-4" style="max-width: 680px;">
+    <div class="tm-card p-4 shadow-sm">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge bg-primary p-2 rounded-circle"><i class="bi bi-sliders text-white"></i></span>
+            <div>
+                <h4 class="fw-bold mb-0">Set Your Travel Preferences</h4>
+                <p class="text-muted small mb-0">Our Scikit-learn Machine Learning model uses these vectors to calculate personalized destination similarity scores.</p>
+            </div>
+        </div>
 
         <form method="POST">
-
             {% csrf_token %}
 
-            <label class="form-label">Travel Interests</label>
-            <input type="text"
-                   name="interests"
-                   class="form-control mb-3"
-                   value="{{ preference.interests }}"
-                   required>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Travel Interests & Activities</label>
+                <input type="text" name="interests" class="form-control" value="{{ preference.interests }}" placeholder="e.g. High Altitude Trekking, Tea Trails, Houseboat Cruising, Photography" required>
+                <div class="text-muted small">Keywords are processed by the TF-IDF vectorizer against destination feature sets.</div>
+            </div>
 
-            <label class="form-label">Preferred Climate</label>
-            <select name="climate"
-                    class="form-select mb-3">
-                <option value="Cool">Cool</option>
-                <option value="Warm">Warm</option>
-                <option value="Cold">Cold</option>
-                <option value="Tropical">Tropical</option>
-            </select>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Preferred Climate</label>
+                    <select name="climate" class="form-select">
+                        <option value="Cool" {% if preference.preferred_climate == 'Cool' %}selected{% endif %}>Cool & Misty (Highlands)</option>
+                        <option value="Tropical" {% if preference.preferred_climate == 'Tropical' %}selected{% endif %}>Tropical & Coastal (Backwaters)</option>
+                        <option value="Warm" {% if preference.preferred_climate == 'Warm' %}selected{% endif %}>Warm & Sunny</option>
+                        <option value="Temperate" {% if preference.preferred_climate == 'Temperate' %}selected{% endif %}>Temperate Forest</option>
+                    </select>
+                </div>
 
-            <label class="form-label">Budget</label>
-            <input type="number"
-                   name="budget"
-                   class="form-control mb-3"
-                   value="{{ preference.budget }}"
-                   required>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Target Budget (₹ INR)</label>
+                    <input type="number" name="budget" class="form-control" value="{{ preference.budget|floatformat:0 }}" required>
+                </div>
+            </div>
 
-            <label class="form-label">Travel Category</label>
-            <select name="category"
-                    class="form-select mb-3">
-                <option value="Nature">Nature</option>
-                <option value="Adventure">Adventure</option>
-                <option value="Beach">Beach</option>
-                <option value="Hill Station">Hill Station</option>
-                <option value="Historical">Historical</option>
-            </select>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Preferred Category</label>
+                    <select name="category" class="form-select">
+                        <option value="Hill Station" {% if preference.preferred_category == 'Hill Station' %}selected{% endif %}>Hill Station</option>
+                        <option value="Backwaters" {% if preference.preferred_category == 'Backwaters' %}selected{% endif %}>Backwaters & Canals</option>
+                        <option value="Mountain & Nature" {% if preference.preferred_category == 'Mountain & Nature' %}selected{% endif %}>Mountain & Nature</option>
+                        <option value="Wildlife Sanctuary" {% if preference.preferred_category == 'Wildlife Sanctuary' %}selected{% endif %}>Wildlife Sanctuary</option>
+                        <option value="Beach" {% if preference.preferred_category == 'Beach' %}selected{% endif %}>Beach & Coastal</option>
+                        <option value="Waterfalls & Forest" {% if preference.preferred_category == 'Waterfalls & Forest' %}selected{% endif %}>Waterfalls & Forest</option>
+                        <option value="Heritage" {% if preference.preferred_category == 'Heritage' %}selected{% endif %}>Heritage & Cultural</option>
+                    </select>
+                </div>
 
-            <button class="btn btn-primary w-100">
-                Save Preferences
-            </button>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Travel Style</label>
+                    <select name="travel_style" class="form-select">
+                        <option value="Solo Explorer" {% if preference.travel_style == 'Solo Explorer' %}selected{% endif %}>Solo Explorer</option>
+                        <option value="Couple Retreat" {% if preference.travel_style == 'Couple Retreat' %}selected{% endif %}>Couple Retreat</option>
+                        <option value="Family Vacation" {% if preference.travel_style == 'Family Vacation' %}selected{% endif %}>Family Vacation</option>
+                        <option value="Adventure Expedition" {% if preference.travel_style == 'Adventure Expedition' %}selected{% endif %}>Adventure Expedition</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="d-grid">
+                <button type="submit" class="btn btn-tm-primary btn-lg fw-bold py-3 shadow">
+                    <i class="bi bi-check2-circle me-1"></i>Save Preferences & Re-Train Recommendations
+                </button>
+            </div>
         </form>
-
     </div>
-
 </div>
-
 {% endblock %}

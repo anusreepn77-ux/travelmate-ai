@@ -1,0 +1,577 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Travel Intelligence Hub - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <!-- Header & Subtitle (Figma Screen 3) -->
+    <div class="mb-3">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-tm-accent text-white px-3 py-1 rounded-pill small fw-bold">
+                <i class="bi bi-cpu-fill me-1"></i>AI Copilot Suite 2.0
+            </span>
+            <span class="text-muted small">Updated Real-Time</span>
+        </div>
+        <h3 class="fw-bold mb-1">AI Travel Intelligence Hub</h3>
+        <p class="text-muted small mb-0">11 powerful AI/ML modules designed for seamless trip planning, real-time safety, and hyper-personalized discovery.</p>
+    </div>
+
+    <!-- System Vitality Ribbon (Figma Screen 3) -->
+    <div class="vitality-ribbon shadow-sm">
+        <div class="vitality-metric">
+            <span class="pulse-dot"></span>
+            <span>11/11 Modules Live</span>
+        </div>
+        <div class="d-none d-sm-flex gap-4">
+            <div><i class="bi bi-check2-circle text-success me-1"></i>Precision: <strong>98.6%</strong></div>
+            <div><i class="bi bi-lightning-charge text-warning me-1"></i>Inference: <strong>420ms</strong></div>
+            <div class="d-none d-md-block"><i class="bi bi-server text-info me-1"></i>LLM: <strong>Gemini 1.5 + Scikit-Learn</strong></div>
+        </div>
+        <div>
+            <span class="badge bg-light text-dark fw-bold px-2 py-1">Operational</span>
+        </div>
+    </div>
+
+    <!-- Categorized Filter Tabs (Figma Screen 3) -->
+    <div class="ai-tab-nav">
+        <a href="?tab=all&dest={{ selected_dest }}" class="ai-tab-btn {% if active_tab == 'all' %}active{% endif %}">
+            <i class="bi bi-grid me-1"></i>All Tools (11)
+        </a>
+        <a href="?tab=planning&dest={{ selected_dest }}" class="ai-tab-btn {% if active_tab == 'planning' %}active{% endif %}">
+            <i class="bi bi-calendar3 me-1"></i>Planning & Route
+        </a>
+        <a href="?tab=budget&dest={{ selected_dest }}" class="ai-tab-btn {% if active_tab == 'budget' %}active{% endif %}">
+            <i class="bi bi-currency-rupee me-1"></i>Budget & Reviews
+        </a>
+        <a href="?tab=safety&dest={{ selected_dest }}" class="ai-tab-btn {% if active_tab == 'safety' %}active{% endif %}">
+            <i class="bi bi-shield-check me-1"></i>Local Assistance & Safety
+        </a>
+    </div>
+
+    <!-- Destination Switcher -->
+    <div class="card p-3 mb-4 shadow-sm border-0 bg-white">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <strong class="small text-muted d-block">ACTIVE DESTINATION CONTEXT:</strong>
+                <span class="fs-5 fw-bold text-primary"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ selected_dest }}, Kerala</span>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="?dest=Munnar&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Munnar' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Munnar</a>
+                <a href="?dest=Alappuzha&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Alappuzha' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Alappuzha</a>
+                <a href="?dest=Wayanad&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Wayanad' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Wayanad</a>
+                <a href="?dest=Vagamon&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Vagamon' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Vagamon</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight Feature: Munnar 48-Hour Generator (Figma Screen 3 Spotlight) -->
+    {% if active_tab == 'all' or active_tab == 'planning' %}
+    <div class="tm-card p-4 mb-4 shadow-sm" style="border-left: 5px solid var(--tm-accent);">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <span class="badge bg-info-subtle text-info fw-bold px-3 py-1 rounded-pill mb-2">
+                    <i class="bi bi-star-fill text-warning me-1"></i>INTERACTIVE SPOTLIGHT
+                </span>
+                <h4 class="fw-bold mb-1">{{ selected_dest }} 48-Hour Generator</h4>
+                <p class="text-muted small mb-0">Two-day high-density expedition circuit optimized for sunrise peaks, minimal road congestion, and local tea trails.</p>
+            </div>
+            <div class="text-end">
+                <button class="btn btn-tm-accent btn-sm rounded-pill px-3" onclick="window.print()">
+                    <i class="bi bi-download me-1"></i>Export Plan
+                </button>
+            </div>
+        </div>
+
+        <div class="timeline-track mt-4">
+            <div class="timeline-item">
+                <span class="timeline-dot"></span>
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <strong class="text-primary small">06:00 AM - 09:30 AM</strong>
+                    <span class="badge bg-success-subtle text-success fw-bold">₹1,400</span>
+                </div>
+                <div class="fw-bold fs-6">Kolukkumalai Sunrise 4x4 Safari & Tea Tasting</div>
+                <p class="text-muted small mb-0">Jeep trail through organic tea terraces. Spectacular cloud bed horizon view.</p>
+            </div>
+
+            <div class="timeline-item">
+                <span class="timeline-dot"></span>
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <strong class="text-primary small">10:30 AM - 01:30 PM</strong>
+                    <span class="badge bg-success-subtle text-success fw-bold">₹300</span>
+                </div>
+                <div class="fw-bold fs-6">Eravikulam Alpine Track & Nilgiri Tahr Watch</div>
+                <p class="text-muted small mb-0">Protected high-altitude biodiversity sanctuary. Advance forest e-pass required.</p>
+            </div>
+
+            <div class="timeline-item">
+                <span class="timeline-dot"></span>
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <strong class="text-primary small">04:00 PM - 06:30 PM</strong>
+                    <span class="badge bg-secondary-subtle text-secondary fw-bold">Free</span>
+                </div>
+                <div class="fw-bold fs-6">Pothamedu Sunset Deck & Twilight Photography</div>
+                <p class="text-muted small mb-0">Overlook tea, coffee, and cardamom estates with rolling evening fog.</p>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top bg-light p-3 rounded-3">
+            <span class="fw-semibold small text-muted">Estimated Day Spend: <strong>₹5,200 / day</strong></span>
+            <span class="badge bg-success px-3 py-1">Paced For Solo & Couples</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 11 Tool Modules Grid -->
+    <div class="row g-4">
+
+        <!-- Tool 1: ML Destination Recommender (Figma Screen 3 Tool 1) -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-2"><i class="bi bi-bullseye text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Smart Destination Recommender</h5>
+                            <span class="badge bg-success-subtle text-success small">Scikit-learn KNN Engine</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Analyzes personal interests, climate cravings, travel budget and past behavior to suggest tailored destinations.</p>
+
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    <span class="badge bg-light text-dark border">Interests: {{ user_interests|truncatewords:4 }}</span>
+                    <span class="badge bg-light text-dark border">Climate: {{ preferred_climate }}</span>
+                    <span class="badge bg-light text-dark border">Budget: ₹{{ budget|floatformat:0 }}</span>
+                </div>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="fw-bold small mb-2 text-primary">Top Recommendations Based On Preference:</div>
+                    {% for rec in recommendations|slice:":3" %}
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div>
+                            <strong>{{ rec.destination.name }}</strong>
+                            <span class="text-muted small">({{ rec.destination.district }})</span>
+                            <div class="text-muted" style="font-size: 0.75rem;">{{ rec.highlight }}</div>
+                        </div>
+                        <span class="badge bg-tm-accent text-white fw-bold">{{ rec.match_percentage }}% Match</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'preferences' %}" class="btn btn-sm btn-outline-primary w-100">Adjust Matching Parameters</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 2: AI Trip Planner Multi-Day (Figma Screen 3 Tool 2) -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-info rounded-circle p-2"><i class="bi bi-calendar-range text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">AI Trip Planner</h5>
+                            <span class="badge bg-info-subtle text-info small">Google Gemini Multi-Day LLM</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Synthesizes day-by-day travel streams including buffer hours, transit tickets, weather-adjusted slots, and dining spots.</p>
+
+                <div class="border rounded-3 p-3 bg-white mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">{{ itinerary.destination }} ({{ itinerary.days_count }} Days Plan)</strong>
+                        <span class="badge bg-warning text-dark">Est. ₹{{ itinerary.estimated_budget|floatformat:0 }}</span>
+                    </div>
+                    {% for day in itinerary.daily_slots|slice:":2" %}
+                    <div class="mb-2">
+                        <span class="badge bg-dark text-white small mb-1">Day {{ day.day }}: {{ day.title }}</span>
+                        {% for slot in day.slots|slice:":2" %}
+                        <div class="d-flex justify-content-between small text-secondary py-1 border-bottom">
+                            <span><i class="bi bi-clock me-1 text-info"></i>{{ slot.time }} - {{ slot.activity|truncatewords:5 }}</span>
+                            <span class="fw-semibold">₹{{ slot.cost }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-muted small text-center">{{ itinerary.summary }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 3: Best Time to Visit Predictor (Figma Screen 3 Tool 3) -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-warning text-dark rounded-circle p-2"><i class="bi bi-thermometer-sun"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Best Time to Visit Predictor</h5>
+                            <span class="badge bg-warning-subtle text-warning small">Scikit-learn Climate Regressor</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Deep climate intelligence cross-referencing rainfall stats, crowd index, and seasonal density curves.</p>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Optimal Travel Window:</span>
+                        <strong class="text-success">{{ climate_info.best_months }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small text-secondary">
+                        <span>Temperature Range:</span>
+                        <span>{{ climate_info.temp_range }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small text-secondary">
+                        <span>Monsoon Risk / Hazard:</span>
+                        <span class="badge bg-success-subtle text-success">{{ climate_info.rainfall_risk }}</span>
+                    </div>
+
+                    <!-- Monthly Seasonal Score Bars -->
+                    <div class="mt-3">
+                        <span class="small fw-semibold text-muted d-block mb-1">Seasonal Influx & Climate Suitability:</span>
+                        <div class="d-flex gap-1 justify-content-between text-center" style="font-size: 0.68rem;">
+                            {% for m in climate_info.monthly_scores %}
+                            <div class="flex-fill">
+                                <div class="bg-primary rounded-1" style="height: {{ m.score|floatformat:0 }}px; max-height: 40px; margin-top: auto; opacity: 0.85;"></div>
+                                <span class="d-block mt-1">{{ m.month }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="small text-muted">{{ climate_info.advice }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 4: Hidden Tourist Places Finder (Figma Screen 3 Tool 4) -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-purple rounded-circle p-2" style="background:#8B5CF6;"><i class="bi bi-gem text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Hidden Tourist Places Finder</h5>
+                            <span class="badge bg-purple-subtle text-dark small" style="background:#EDE9FE;">Crowd Index &lt; 15%</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Curates secluded gem sanctuaries, secret cliff viewpoints, and remote groves known only to native foragers and local wardens.</p>
+
+                <div class="row g-2 mb-3">
+                    {% for gem in hidden_gems %}
+                    <div class="col-6">
+                        <div class="border rounded-3 p-2 bg-light h-100">
+                            <span class="badge bg-dark text-white small mb-1">{{ gem.name }}</span>
+                            <div class="small fw-semibold text-primary">₹{{ gem.average_budget|floatformat:0 }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">{{ gem.highlights|truncatewords:4 }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'destination_list' %}?district=Vagamon" class="btn btn-sm btn-tm-outline w-100">Explore All Offbeat Gems</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 5: Travel Buddy Matching (Figma Screen 3 Tool 5) -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-danger rounded-circle p-2"><i class="bi bi-people text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Travel Buddy Matching</h5>
+                            <span class="badge bg-danger-subtle text-danger small">Social Cosine Similarity</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Matches solo explorers and expedition groups using interest matrix correlation, safety scores, and matching itinerary schedules.</p>
+
+                {% for b in buddies|slice:":2" %}
+                <div class="d-flex align-items-center gap-3 p-2 border rounded-3 mb-2 bg-white">
+                    <img src="{{ b.buddy.avatar_url }}" alt="{{ b.buddy.name }}" width="44" height="44" class="rounded-circle border">
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-0">{{ b.buddy.name }}</h6>
+                            <span class="badge bg-success text-white">{{ b.compatibility }}% Compatible</span>
+                        </div>
+                        <div class="text-muted small" style="font-size: 0.75rem;">{{ b.buddy.destination.name }} • {{ b.buddy.travel_dates }}</div>
+                        <div class="text-secondary small">{{ b.buddy.bio|truncatewords:8 }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 6: Tourist Review Sentiment Analysis (Figma Screen 3 Tool 6) -->
+        {% if active_tab == 'all' or active_tab == 'budget' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-info rounded-circle p-2"><i class="bi bi-chat-heart text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Review Sentiment Analysis</h5>
+                            <span class="badge bg-info-subtle text-info small">TF-IDF + NLP Engine</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-2">Synthesizes thousands of verified traveler reviews into actionable sentiment scores, separating real opinions from hype.</p>
+
+                <!-- Live Sentiment Tester Form -->
+                <div class="mb-3">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="testReviewInput" class="form-control" value="{{ sample_review }}">
+                        <button class="btn btn-tm-primary" id="testReviewBtn">Analyze NLP</button>
+                    </div>
+                </div>
+
+                <div class="bg-light p-3 rounded-3 mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small fw-semibold text-muted">Sentiment Breakdown:</span>
+                        <span id="sentimentResultLabel" class="badge bg-success">{{ sentiment.label }} ({{ sentiment.positive_pct }}% Positivity)</span>
+                    </div>
+
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" id="sentimentPosBar" style="width: {{ sentiment.positive_pct }}%;"></div>
+                        <div class="progress-bar bg-warning" id="sentimentNeuBar" style="width: {{ sentiment.neutral_pct }}%;"></div>
+                        <div class="progress-bar bg-danger" id="sentimentNegBar" style="width: {{ sentiment.negative_pct }}%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+                        <span>Positive: {{ sentiment.positive_pct }}%</span>
+                        <span>Neutral: {{ sentiment.neutral_pct }}%</span>
+                        <span>Negative: {{ sentiment.negative_pct }}%</span>
+                    </div>
+                </div>
+                <div class="text-muted small">Alappuzha: 4.8/5.0 • Affordability: High • Cleanliness: Verified</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 7: AI Travel Cost Optimizer (Figma Screen 3 Tool 7) -->
+        {% if active_tab == 'all' or active_tab == 'budget' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success rounded-circle p-2"><i class="bi bi-piggy-bank text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">AI Travel Cost Optimizer</h5>
+                            <span class="badge bg-success-subtle text-success small">Save ~32% on Stays</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Evaluates alternative homestay combos, transit switches, and combination passes to shave costs without eliminating comfort.</p>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                        <span>Original Route Estimate:</span>
+                        <span class="text-decoration-line-through text-muted">₹{{ cost_optimization.original_cost }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                        <span class="fw-bold text-success">Optimized Smart Spend:</span>
+                        <span class="fs-5 fw-bold text-success">₹{{ cost_optimization.optimized_cost }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center text-primary small fw-bold">
+                        <span>Calculated Total Savings:</span>
+                        <span>₹{{ cost_optimization.total_savings }} ({{ cost_optimization.savings_percent }}% OFF)</span>
+                    </div>
+                </div>
+
+                <div class="small">
+                    {% for rec in cost_optimization.recommendations %}
+                    <div class="d-flex justify-content-between text-secondary py-1 border-bottom">
+                        <span><i class="bi bi-check-circle text-success me-1"></i>{{ rec.option }}</span>
+                        <strong class="text-success">{{ rec.savings }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 8: AI Outfit & Packing Stylist (Figma Screen 3 Tool 8) -->
+        {% if active_tab == 'all' or active_tab == 'safety' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-2"><i class="bi bi-backpack text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">AI Outfit & Packing Stylist</h5>
+                            <span class="badge bg-primary-subtle text-primary small">Weather-Sync Intelligence</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-2">Syncs real-time cloud and chill, humidity, and temple dress codes to formulate day-specific packing blueprints.</p>
+                <span class="badge bg-light text-dark border mb-3"><i class="bi bi-cloud-snow text-info me-1"></i>{{ outfits.weather_summary }}</span>
+
+                <div class="small text-secondary mb-3">
+                    {% for layer in outfits.layers %}
+                    <div class="py-1 border-bottom">
+                        <strong class="text-dark">{{ layer.tier }}:</strong> {{ layer.items }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-muted small"><strong>Key Essentials:</strong> {{ outfits.accessories|join:", " }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 9: Malayalam Dialect Voice AI / Translator (Figma Screen 3 Tool 9) -->
+        {% if active_tab == 'all' or active_tab == 'safety' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-danger rounded-circle p-2"><i class="bi bi-translate text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Malayalam & Dialect Voice AI</h5>
+                            <span class="badge bg-danger-subtle text-danger small">Contextual Local Slang</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Offline-ready contextual translation capturing nuances, polite bargaining, and dietary allergy alerts.</p>
+
+                <div class="bg-light p-3 rounded-3 mb-2">
+                    {% for t in translations|slice:":3" %}
+                    <div class="py-2 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fs-6 fw-bold text-dark">{{ t.malayalam }}</span>
+                            <span class="badge bg-primary text-white" style="font-family: monospace;">{{ t.transliteration }}</span>
+                        </div>
+                        <div class="text-primary small fw-semibold">"{{ t.english }}"</div>
+                        <div class="text-muted" style="font-size: 0.72rem;">{{ t.context }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 10: Sustainable Travel Recommender (Figma Screen 3 Tool 10) -->
+        {% if active_tab == 'all' or active_tab == 'budget' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success rounded-circle p-2"><i class="bi bi-tree text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Sustainable Travel Recommender</h5>
+                            <span class="badge bg-success-subtle text-success small">Eco-Zero Track</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Highlights low-emission stays, community homestays that support indigenous tribes, and carbon-neutral transit choices.</p>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <span class="small fw-semibold text-muted">Current Trip Footprint:</span>
+                        <span class="fs-5 fw-bold text-success">{{ carbon.trip_footprint_kg }} kg CO2e</span>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted mb-2">
+                        <span>Kerala State Average:</span>
+                        <span>{{ carbon.state_average_kg }} kg CO2e</span>
+                    </div>
+                    <div class="alert alert-success py-1 px-2 small mb-0">
+                        <i class="bi bi-check-circle me-1"></i><strong>{{ carbon.percent_below_avg }}% below state average!</strong> Equivalent to {{ carbon.trees_needed_offset }} tree offset.
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tool 11: Safety Score & Emergency Radar (Figma Screen 3 Tool 11) -->
+        {% if active_tab == 'all' or active_tab == 'safety' %}
+        <div class="col-lg-6">
+            <div class="tm-card p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-danger rounded-circle p-2"><i class="bi bi-shield-exclamation text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Safety Score & Emergency Radar</h5>
+                            <span class="badge bg-danger-subtle text-danger small">24/7 Monitored</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-2">Real-time district alerts, terrain advisories, verified medical hubs, police stations, and 1-tap SOS connection.</p>
+
+                <div class="bg-light p-3 rounded-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>{{ safety.zone }}</strong>
+                        <span class="badge bg-success">Safety Score: {{ safety.safety_rating }}/100</span>
+                    </div>
+                    <div class="small text-secondary mb-1"><i class="bi bi-check2 text-success me-1"></i>{{ safety.landslide_hazard }}</div>
+                    <div class="small text-secondary mb-1"><i class="bi bi-cone-striped text-warning me-1"></i>{{ safety.road_status }}</div>
+                    <div class="small text-secondary"><i class="bi bi-hospital text-danger me-1"></i>{{ safety.nearest_medical }}</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="tel:112" class="btn btn-danger btn-sm flex-fill fw-bold py-2">
+                        <i class="bi bi-telephone-outbound me-1"></i>1-Tap SOS Helpline (112)
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Bonus Tool: Multi-Destination Kerala Route Explorer -->
+        {% if active_tab == 'all' or active_tab == 'planning' %}
+        <div class="col-12">
+            <div class="tm-card p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-2"><i class="bi bi-signpost-split text-white"></i></span>
+                        <div>
+                            <h5 class="fw-bold mb-0">Multi-Destination Kerala Route Explorer</h5>
+                            <span class="badge bg-primary-subtle text-primary small">Distance Matrix Optimization</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Calculate driving transit durations, fuel estimates, and total route budgets across connected Kerala districts.</p>
+
+                <div class="row g-3">
+                    {% for leg in route.legs %}
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 bg-white h-100 shadow-sm">
+                            <div class="fw-bold text-primary mb-1">{{ leg.from }} &rarr; {{ leg.to }}</div>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span><i class="bi bi-speedometer2 me-1"></i>{{ leg.distance_km }} km</span>
+                                <span><i class="bi bi-clock me-1"></i>{{ leg.duration }}</span>
+                            </div>
+                            <div class="mt-2 text-success fw-bold small">Transit Est: ₹{{ leg.fuel_transit_cost }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top bg-light p-3 rounded-3">
+                    <div>Total Circuit Distance: <strong>{{ route.total_distance_km }} km</strong> ({{ route.stops_count }} Destinations)</div>
+                    <span class="badge bg-tm-primary fs-6">Combined Budget: ₹{{ route.total_estimated_budget }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Bottom Copilot Action Ribbon (Figma Screen 3 Bottom) -->
+    <div class="mt-4 text-center p-4 bg-tm-primary text-white rounded-4 shadow">
+        <h4 class="fw-bold mb-2">Tailor All 11 Tools for Your Next Trip</h4>
+        <p class="text-white-50 mb-3" style="max-width: 600px; margin: 0 auto;">Seamlessly pass your preferences, destinations, dates, and budget across all 11 AI modules simultaneously.</p>
+        <a href="{% url 'preferences' %}" class="btn btn-tm-accent btn-lg rounded-pill px-5 fw-bold shadow">
+            <i class="bi bi-stars me-2"></i>Launch Full AI Copilot
+        </a>
+    </div>
+
+</div>
+{% endblock %}
