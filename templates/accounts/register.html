@@ -4,19 +4,22 @@
 {% block title %}Register - TravelMate AI{% endblock %}
 
 {% block content %}
-<div class="container py-5" style="max-width: 520px;">
-    <div class="tm-card p-4 shadow-lg">
+<div class="container py-5" style="max-width: 480px;">
+    <div class="tm-card p-4 shadow-lg border" style="background:#FFFFFF;">
         <div class="text-center mb-4">
-            <span class="badge bg-tm-accent p-2 rounded-circle mb-2"><i class="bi bi-person-plus-fill text-white fs-4"></i></span>
+            <span class="badge bg-tm-accent p-2 rounded-circle mb-2">
+                <i class="bi bi-person-plus-fill text-white fs-4"></i>
+            </span>
             <h3 class="fw-bold mb-1">Create an Account</h3>
             <p class="text-muted small">Join TravelMate AI for personalized Kerala itineraries</p>
         </div>
 
-        <form method="POST">
+        <form method="POST" novalidate>
             {% csrf_token %}
 
             {% if form.errors %}
-            <div class="alert alert-danger small p-2 mb-3">
+            <div class="alert alert-danger small p-3 rounded-3 mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
                 {% for field in form %}
                     {% for error in field.errors %}
                         <div>{{ error }}</div>
@@ -30,23 +33,20 @@
 
             {% for field in form %}
             <div class="mb-3">
-                <label class="form-label fw-semibold small">{{ field.label }}</label>
+                <label class="form-label fw-semibold small text-dark mb-1">{{ field.label }}</label>
                 {{ field }}
-                {% if field.help_text %}
-                <div class="text-muted" style="font-size: 0.72rem;">{{ field.help_text|safe }}</div>
-                {% endif %}
             </div>
             {% endfor %}
 
             <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-tm-accent py-2 fw-bold text-white">
+                <button type="submit" class="btn btn-tm-accent py-2 fw-bold text-white shadow-sm">
                     Complete Registration &rarr;
                 </button>
             </div>
         </form>
 
         <div class="text-center mt-4 pt-3 border-top small text-muted">
-            Already have an account? <a href="{% url 'login' %}" class="fw-bold text-primary">Login Here</a>
+            Already have an account? <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none">Login Here</a>
         </div>
     </div>
 </div>

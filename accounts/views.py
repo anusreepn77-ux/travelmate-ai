@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import CustomUserCreationForm
 from .models import TravelPreference, UserProfile
 from destinations.models import Destination
 from bookings.models import Booking
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             # Initialize profile and preferences
@@ -29,7 +29,7 @@ def register(request):
             messages.success(request, 'Registration successful! Welcome to TravelMate AI.')
             return redirect('user_dashboard')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
 
     return render(
         request,
