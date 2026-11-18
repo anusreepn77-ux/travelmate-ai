@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2>Welcome, {{ user.username }}!</h2>
+
+    <p>Plan your next adventure with TravelMate AI.</p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-4 shadow-sm">
+                <h5>Explore Destinations</h5>
+                <a href="{% url 'destination_list' %}"
+                   class="btn btn-primary">
+                    Explore
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-4 shadow-sm">
+                <h5>Travel Preferences</h5>
+                <a href="{% url 'preferences' %}"
+                   class="btn btn-primary">
+                    Set Preferences
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-4 shadow-sm">
+                <h5>AI Trip Planner</h5>
+                <button class="btn btn-secondary" disabled>
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">Explore Destinations</h2>
+
+    <div class="row">
+
+        {% for destination in destinations %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                {% if destination.image %}
+                <img src="{{ destination.image.url }}"
+                     class="card-img-top"
+                     style="height:220px;object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h5>{{ destination.name }}</h5>
+
+                    <p>{{ destination.district }}</p>
+
+                    <p>Budget: ₹{{ destination.average_budget }}</p>
+
+                    <a href="{% url 'destination_detail' destination.id %}"
+                       class="btn btn-primary">
+                        Explore
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>No destinations available yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

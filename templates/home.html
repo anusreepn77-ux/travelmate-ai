@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}TravelMate AI - Home{% endblock %}
+
+{% block content %}
+
+<section class="hero-section text-center">
+
+    <div class="container py-5">
+
+        <h1 class="display-4 fw-bold">
+            Your Next Adventure Starts Here
+        </h1>
+
+        <p class="lead">
+            Discover destinations and plan your
+            perfect journey with AI.
+        </p>
+
+        <a href="{% url 'destination_list' %}"
+           class="btn btn-primary btn-lg mt-3">
+            Explore Destinations
+        </a>
+
+    </div>
+
+</section>
+
+<section class="container py-5">
+
+    <h2 class="text-center mb-4">
+        Explore Kerala
+    </h2>
+
+    <div class="row">
+
+        {% for destination in destinations %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                {% if destination.image %}
+                <img src="{{ destination.image.url }}"
+                     class="card-img-top"
+                     style="height:220px;object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h5>{{ destination.name }}</h5>
+
+                    <p>{{ destination.district }}</p>
+
+                    <a href="{% url 'destination_detail' destination.id %}"
+                       class="btn btn-outline-primary">
+                        View Details
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

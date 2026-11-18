@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2>{{ destination.name }}</h2>
+
+    {% if destination.image %}
+    <img src="{{ destination.image.url }}"
+         class="img-fluid rounded mb-4"
+         style="max-height:400px;">
+    {% endif %}
+
+    <p>{{ destination.description }}</p>
+
+    <p>District: {{ destination.district }}</p>
+
+    <p>Category: {{ destination.category }}</p>
+
+    <p>Budget: ₹{{ destination.average_budget }}</p>
+
+    <p>Climate: {{ destination.climate }}</p>
+
+    <p>Best month: {{ destination.best_month }}</p>
+
+    <a href="{% url 'user_dashboard' %}"
+       class="btn btn-primary">
+        Go to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}
