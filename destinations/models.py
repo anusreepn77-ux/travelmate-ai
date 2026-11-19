@@ -61,3 +61,36 @@ class Hotel(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.destination.name})"
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlists')
+    destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='wishlisted_by')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'destination')
+
+    def __str__(self):
+        return f"{self.user.username} ♥ {self.destination.name}"
+
+
+class TravelActivity(models.Model):
+    ACTIVITY_TYPES = (
+        ('Sightseeing', 'Sightseeing'),
+        ('Adventure', 'Adventure'),
+        ('Cultural', 'Cultural'),
+        ('Nature', 'Nature'),
+        ('Water Sports', 'Water Sports'),
+        ('Wellness', 'Wellness'),
+    )
+    destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='activities')
+    name = models.CharField(max_length=200)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, default='Sightseeing')
+    description = models.TextField(blank=True)
+    price = models.FloatField(default=0.0)
+    duration_hours = models.FloatField(default=2.0)
+    is_eco_friendly = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} ({self.destination.name})"

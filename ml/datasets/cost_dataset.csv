@@ -1,0 +1,161 @@
+destination,days,travelers,accommodation_type,transport_type,total_cost
+Bekal,3,4,Standard Hotel,Self Drive SUV,42214
+Kozhikode,2,2,Luxury Resort,Shared Cab,19688
+Varkala,4,1,Eco Villa,Self Drive SUV,34668
+Palakkad,4,2,Luxury Resort,Public KSRTC,36668
+Thekkady,5,1,Eco Villa,Shared Cab,30563
+Kozhikode,2,1,Eco Villa,Private Sedan,14974
+Alappuzha,5,4,Luxury Resort,Shared Cab,112039
+Marari Beach,2,1,Budget Homestay,Public KSRTC,5648
+Alappuzha,4,1,Luxury Resort,Private Sedan,47504
+Varkala,2,2,Budget Homestay,Public KSRTC,8847
+Wayanad,5,4,Eco Villa,Public KSRTC,68193
+Varkala,4,2,Luxury Resort,Shared Cab,38790
+Wayanad,7,1,Budget Homestay,Self Drive SUV,42601
+Palakkad,5,1,Standard Hotel,Public KSRTC,21643
+Athirappilly,4,1,Budget Homestay,Shared Cab,14288
+Thekkady,5,1,Budget Homestay,Public KSRTC,15192
+Kozhikode,2,1,Budget Homestay,Private Sedan,9879
+Bekal,3,2,Standard Hotel,Public KSRTC,16748
+Bekal,7,4,Eco Villa,Public KSRTC,95179
+Bekal,4,4,Eco Villa,Self Drive SUV,67157
+Kozhikode,4,1,Budget Homestay,Public KSRTC,11921
+Athirappilly,5,2,Budget Homestay,Private Sedan,31437
+Nelliyampathy,4,1,Budget Homestay,Shared Cab,14223
+Athirappilly,2,2,Budget Homestay,Shared Cab,9845
+Thekkady,2,2,Budget Homestay,Self Drive SUV,14637
+Bekal,4,2,Budget Homestay,Self Drive SUV,29768
+Marari Beach,2,1,Standard Hotel,Public KSRTC,8912
+Kozhikode,7,1,Standard Hotel,Public KSRTC,30386
+Alappuzha,4,2,Luxury Resort,Private Sedan,53880
+Athirappilly,4,2,Standard Hotel,Private Sedan,30423
+Vagamon,5,2,Budget Homestay,Shared Cab,24104
+Munnar,4,1,Luxury Resort,Shared Cab,40589
+Nelliyampathy,7,4,Eco Villa,Shared Cab,99188
+Alappuzha,3,2,Budget Homestay,Self Drive SUV,26897
+Munnar,3,4,Budget Homestay,Public KSRTC,29929
+Athirappilly,7,2,Budget Homestay,Private Sedan,44137
+Munnar,3,2,Luxury Resort,Shared Cab,34901
+Thekkady,2,4,Luxury Resort,Public KSRTC,36293
+Marari Beach,4,1,Luxury Resort,Self Drive SUV,43705
+Kozhikode,2,4,Eco Villa,Private Sedan,31399
+Wayanad,2,1,Standard Hotel,Private Sedan,12595
+Varkala,3,2,Luxury Resort,Shared Cab,28972
+Wayanad,2,2,Luxury Resort,Shared Cab,19339
+Athirappilly,5,4,Standard Hotel,Private Sedan,64815
+Wayanad,7,4,Luxury Resort,Shared Cab,129805
+Marari Beach,5,1,Eco Villa,Private Sedan,37772
+Munnar,4,2,Standard Hotel,Shared Cab,29751
+Athirappilly,5,1,Budget Homestay,Self Drive SUV,30297
+Thekkady,2,4,Eco Villa,Shared Cab,28269
+Nelliyampathy,3,1,Standard Hotel,Shared Cab,14707
+Varkala,5,4,Standard Hotel,Public KSRTC,54694
+Marari Beach,3,4,Budget Homestay,Shared Cab,26812
+Alappuzha,3,4,Luxury Resort,Public KSRTC,64980
+Munnar,3,4,Eco Villa,Public KSRTC,49546
+Varkala,4,4,Standard Hotel,Shared Cab,46218
+Kozhikode,2,2,Eco Villa,Public KSRTC,14238
+Wayanad,5,1,Budget Homestay,Public KSRTC,15034
+Athirappilly,3,1,Standard Hotel,Public KSRTC,12638
+Kozhikode,3,2,Budget Homestay,Shared Cab,14840
+Alappuzha,4,4,Luxury Resort,Public KSRTC,87275
+Nelliyampathy,7,1,Luxury Resort,Self Drive SUV,76308
+Thekkady,3,4,Eco Villa,Private Sedan,47068
+Kozhikode,3,1,Budget Homestay,Shared Cab,10790
+Palakkad,3,1,Budget Homestay,Private Sedan,14960
+Athirappilly,2,4,Luxury Resort,Public KSRTC,35935
+Athirappilly,5,4,Budget Homestay,Public KSRTC,41854
+Bekal,2,4,Eco Villa,Shared Cab,28113
+Thekkady,2,2,Budget Homestay,Private Sedan,12695
+Kozhikode,5,4,Eco Villa,Self Drive SUV,83995
+Munnar,5,4,Standard Hotel,Self Drive SUV,84902
+Nelliyampathy,3,4,Budget Homestay,Self Drive SUV,34308
+Munnar,3,1,Eco Villa,Public KSRTC,20782
+Palakkad,2,4,Eco Villa,Public KSRTC,27271
+Varkala,7,4,Standard Hotel,Private Sedan,90241
+Nelliyampathy,4,4,Standard Hotel,Public KSRTC,43960
+Varkala,4,1,Standard Hotel,Self Drive SUV,29637
+Kozhikode,4,4,Eco Villa,Public KSRTC,54473
+Vagamon,2,4,Luxury Resort,Private Sedan,40241
+Athirappilly,3,4,Luxury Resort,Shared Cab,55882
+Bekal,4,1,Standard Hotel,Self Drive SUV,29787
+Marari Beach,4,2,Luxury Resort,Self Drive SUV,49096
+Varkala,7,1,Budget Homestay,Public KSRTC,21063
+Wayanad,7,1,Eco Villa,Shared Cab,43064
+Varkala,2,1,Standard Hotel,Self Drive SUV,14854
+Vagamon,3,2,Budget Homestay,Self Drive SUV,22185
+Vagamon,5,4,Budget Homestay,Shared Cab,44450
+Palakkad,4,1,Luxury Resort,Self Drive SUV,43952
+Vagamon,7,1,Budget Homestay,Public KSRTC,20830
+Nelliyampathy,5,1,Budget Homestay,Self Drive SUV,30600
+Varkala,5,2,Luxury Resort,Private Sedan,55473
+Bekal,7,4,Luxury Resort,Self Drive SUV,147843
+Athirappilly,2,1,Luxury Resort,Shared Cab,16819
+Varkala,2,4,Standard Hotel,Shared Cab,23364
+Kozhikode,7,4,Budget Homestay,Public KSRTC,58325
+Alappuzha,4,2,Eco Villa,Shared Cab,36024
+Munnar,5,4,Eco Villa,Public KSRTC,82118
+Kozhikode,7,4,Standard Hotel,Shared Cab,80741
+Varkala,7,1,Luxury Resort,Public KSRTC,54552
+Palakkad,5,4,Budget Homestay,Public KSRTC,41410
+Kozhikode,5,2,Eco Villa,Shared Cab,37341
+Wayanad,4,2,Budget Homestay,Self Drive SUV,29313
+Wayanad,3,4,Luxury Resort,Shared Cab,55965
+Alappuzha,5,2,Budget Homestay,Self Drive SUV,44957
+Wayanad,3,1,Budget Homestay,Public KSRTC,9088
+Palakkad,2,1,Eco Villa,Self Drive SUV,17344
+Kozhikode,3,4,Budget Homestay,Private Sedan,30632
+Vagamon,5,4,Luxury Resort,Self Drive SUV,105535
+Alappuzha,3,2,Standard Hotel,Self Drive SUV,31955
+Bekal,5,1,Eco Villa,Shared Cab,30765
+Vagamon,3,1,Standard Hotel,Self Drive SUV,22314
+Alappuzha,4,2,Standard Hotel,Private Sedan,36893
+Vagamon,3,1,Luxury Resort,Private Sedan,29524
+Kozhikode,4,1,Luxury Resort,Shared Cab,33432
+Bekal,2,1,Eco Villa,Private Sedan,15583
+Athirappilly,5,2,Standard Hotel,Private Sedan,38054
+Marari Beach,3,4,Eco Villa,Shared Cab,42821
+Varkala,5,4,Standard Hotel,Self Drive SUV,69901
+Palakkad,2,2,Budget Homestay,Self Drive SUV,14498
+Munnar,2,4,Budget Homestay,Self Drive SUV,27222
+Thekkady,7,2,Luxury Resort,Private Sedan,77541
+Palakkad,4,2,Eco Villa,Public KSRTC,27635
+Vagamon,4,4,Standard Hotel,Shared Cab,45763
+Bekal,4,4,Budget Homestay,Self Drive SUV,45283
+Bekal,3,2,Luxury Resort,Private Sedan,33208
+Nelliyampathy,2,1,Eco Villa,Private Sedan,15093
+Varkala,3,4,Luxury Resort,Private Sedan,60188
+Bekal,5,4,Eco Villa,Public KSRTC,67930
+Vagamon,3,4,Eco Villa,Shared Cab,42715
+Munnar,5,1,Luxury Resort,Private Sedan,59389
+Vagamon,7,2,Luxury Resort,Public KSRTC,64048
+Thekkady,2,1,Budget Homestay,Shared Cab,6882
+Varkala,5,1,Eco Villa,Public KSRTC,28655
+Palakkad,4,4,Standard Hotel,Self Drive SUV,55890
+Athirappilly,7,1,Luxury Resort,Self Drive SUV,76228
+Palakkad,3,2,Luxury Resort,Shared Cab,28878
+Bekal,5,2,Eco Villa,Shared Cab,37682
+Thekkady,4,1,Eco Villa,Self Drive SUV,34888
+Bekal,2,4,Budget Homestay,Shared Cab,17698
+Wayanad,7,2,Eco Villa,Shared Cab,52428
+Palakkad,4,2,Budget Homestay,Self Drive SUV,29838
+Munnar,5,2,Luxury Resort,Self Drive SUV,74418
+Marari Beach,5,2,Standard Hotel,Self Drive SUV,43786
+Nelliyampathy,3,1,Eco Villa,Self Drive SUV,26179
+Varkala,3,1,Standard Hotel,Shared Cab,14745
+Munnar,4,1,Standard Hotel,Self Drive SUV,36240
+Athirappilly,4,4,Eco Villa,Self Drive SUV,66704
+Munnar,7,4,Budget Homestay,Public KSRTC,70332
+Alappuzha,7,4,Standard Hotel,Shared Cab,97281
+Vagamon,7,1,Standard Hotel,Self Drive SUV,51552
+Bekal,4,1,Luxury Resort,Self Drive SUV,43496
+Thekkady,3,2,Budget Homestay,Shared Cab,14915
+Kozhikode,5,4,Budget Homestay,Shared Cab,44272
+Nelliyampathy,7,4,Standard Hotel,Public KSRTC,76724
+Vagamon,3,1,Budget Homestay,Self Drive SUV,18607
+Vagamon,7,2,Luxury Resort,Private Sedan,77812
+Nelliyampathy,5,4,Budget Homestay,Private Sedan,51436
+Palakkad,3,4,Eco Villa,Self Drive SUV,49927
+Thekkady,5,4,Budget Homestay,Public KSRTC,41528
+Marari Beach,7,1,Eco Villa,Self Drive SUV,61360
+Wayanad,5,4,Luxury Resort,Public KSRTC,89697

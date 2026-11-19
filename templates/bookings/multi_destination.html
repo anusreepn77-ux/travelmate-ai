@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Multi-Destination Travel Explorer - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-tm-primary text-white px-2 py-1 rounded-pill small">Utility Module C</span>
+                <span class="badge bg-info-subtle text-info small"><i class="bi bi-pin-map me-1"></i>Kerala Circuit Engine</span>
+            </div>
+            <h4 class="fw-bold mb-0">Multi-Destination Travel Explorer</h4>
+            <span class="text-muted small">Select multiple Kerala tourist spots, calculate road distance, travel time, and transit budget</span>
+        </div>
+        <a href="{% url 'destination_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            &larr; Explore Destinations
+        </a>
+    </div>
+
+    <!-- Stop Selection Bar -->
+    <div class="tm-card p-4 shadow-sm mb-4">
+        <h6 class="fw-bold mb-2">Select Circuit Stops (Check 2 or more places):</h6>
+        <form method="GET" class="d-flex flex-wrap gap-2 align-items-center">
+            {% for dest in all_destinations %}
+            <div class="form-check form-check-inline border rounded-pill px-3 py-1 bg-light">
+                <input class="form-check-input" type="checkbox" name="stops" value="{{ dest }}" id="stop_{{ forloop.counter }}"
+                    {% if dest in selected_destinations %}checked{% endif %}>
+                <label class="form-check-label small fw-semibold" for="stop_{{ forloop.counter }}">{{ dest }}</label>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-tm-accent rounded-pill px-4 ms-auto mt-2 mt-md-0 fw-semibold">
+                <i class="bi bi-calculator me-1"></i>Calculate Route
+            </button>
+        </form>
+    </div>
+
+    <!-- Route Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="text-muted small fw-semibold">Total Road Distance</span>
+                <div class="stat-value text-primary">{{ route_data.total_distance_km }} KM</div>
+                <div class="stat-sub text-muted">Across {{ route_data.stops_count }} circuit stops</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="text-muted small fw-semibold">Estimated Total Trip Budget</span>
+                <div class="stat-value text-success">₹{{ route_data.total_estimated_budget|floatformat:0 }}</div>
+                <div class="stat-sub text-muted">Includes transit, fuel & stay baseline</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="text-muted small fw-semibold">Leg Count</span>
+                <div class="stat-value text-warning">{{ route_data.legs|length }} Transit Legs</div>
+                <div class="stat-sub text-muted">Optimal Western Ghat corridor</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Route Legs Detailed Timeline -->
+    <div class="tm-card p-4 shadow-sm mb-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-signpost-split-fill text-tm-primary me-2"></i>Trip Route Matrix & Transit Breakdown</h6>
+        <div class="space-y-3">
+            {% for leg in route_data.legs %}
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 rounded-3 border mb-3 bg-light">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-tm-primary text-white rounded-circle p-2 fs-6">{{ forloop.counter }}</span>
+                    <div>
+                        <div class="fw-bold fs-6">{{ leg.from }} &rarr; {{ leg.to }}</div>
+                        <span class="text-muted small"><i class="bi bi-clock me-1"></i>Duration: {{ leg.duration }}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-4 mt-2 mt-md-0 text-end">
+                    <div>
+                        <span class="text-muted small d-block">Distance</span>
+                        <span class="fw-bold">{{ leg.distance_km }} km</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small d-block">Fuel / Cab Est.</span>
+                        <span class="fw-bold text-success">₹{{ leg.fuel_transit_cost }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-4 text-muted">Please select at least two destinations above to compute route details.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

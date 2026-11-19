@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Travel History - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <h4 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-2"></i>My Travel History</h4>
+            <span class="text-muted small">Your past and upcoming Kerala journeys with booking receipts & vouchers</span>
+        </div>
+        <a href="{% url 'destination_list' %}" class="btn btn-sm btn-tm-primary rounded-pill px-3">
+            <i class="bi bi-plus-circle me-1"></i>Book New Trip
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for b in history %}
+        <div class="col-md-6 col-lg-4">
+            <div class="tm-card p-4 shadow-sm h-100 border position-relative">
+                <span class="badge {% if b.status == 'Confirmed' %}bg-success{% elif b.status == 'Completed' %}bg-primary{% else %}bg-secondary{% endif %} position-absolute top-0 end-0 m-3 px-3 py-1 rounded-pill small">
+                    {{ b.status }}
+                </span>
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-3 bg-tm-accent bg-opacity-10 text-tm-accent rounded-circle fs-4">
+                        <i class="bi bi-luggage-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0">
+                            {% if b.package %}{{ b.package.package_name }}{% elif b.destination %}{{ b.destination.name }} Trip{% else %}Kerala Tour{% endif %}
+                        </h6>
+                        <span class="text-muted small">Voucher: <code>{{ b.voucher_code }}</code></span>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3 small space-y-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>Travel Date</span>
+                        <span class="fw-semibold">{{ b.travel_date|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted"><i class="bi bi-people me-1"></i>Party Size</span>
+                        <span class="fw-semibold">{{ b.number_of_people }} Person(s)</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted"><i class="bi bi-currency-rupee me-1"></i>Total Amount</span>
+                        <span class="fw-bold text-dark">₹{{ b.total_amount|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3 text-center">
+                    <a href="{% url 'voucher_detail' b.id %}" class="btn btn-sm btn-outline-primary rounded-pill w-100">
+                        <i class="bi bi-qr-code me-1"></i>View Digital Voucher
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="p-5 bg-white rounded-3 shadow-sm border mx-auto" style="max-width: 480px;">
+                <i class="bi bi-compass text-muted display-4"></i>
+                <h5 class="fw-bold mt-3">No Travel History Recorded</h5>
+                <p class="text-muted small">You haven't booked any Kerala travel packages yet. Explore our packages and start your journey!</p>
+                <a href="{% url 'destination_list' %}" class="btn btn-tm-accent rounded-pill px-4 mt-2">Explore Destinations</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

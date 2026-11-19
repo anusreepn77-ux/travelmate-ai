@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class TravelPreference(models.Model):
     user = models.OneToOneField(
@@ -31,3 +32,26 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Notification(models.Model):
+    NOTIF_TYPES = (
+        ('booking', 'Booking'),
+        ('reminder', 'Reminder'),
+        ('recommendation', 'Recommendation'),
+        ('buddy', 'Buddy Request'),
+        ('system', 'System'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    notification_type = models.CharField(max_length=30, choices=NOTIF_TYPES, default='system')
+    is_read = models.BooleanField(default=False)
+    link = models.CharField(max_length=300, blank=True, default='')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} → {self.user.username}"

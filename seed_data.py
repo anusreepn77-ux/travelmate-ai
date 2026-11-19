@@ -5,16 +5,20 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'travelmateai.settings')
 django.setup()
 
 from django.contrib.auth.models import User
-from destinations.models import Destination, Review, Hotel
+from destinations.models import Destination, Review, Hotel, TravelActivity, Wishlist
 from bookings.models import TravelPackage, Booking, DocumentReminder
-from accounts.models import TravelPreference, UserProfile
+from accounts.models import TravelPreference, UserProfile, Notification
 from recomendations.models import TravelBuddy
+
 
 def seed():
     print("Seeding TravelMate AI database...")
 
     # 1. Admin & Test User Setup
-    admin_user, _ = User.objects.get_or_create(username='admin', defaults={'email': 'admin@travelmate.ai'})
+    admin_user, _ = User.objects.get_or_create(
+        username='admin',
+        defaults={'email': 'admin@travelmate.ai'}
+    )
     admin_user.set_password('admin123')
     admin_user.is_staff = True
     admin_user.is_superuser = True
@@ -44,7 +48,7 @@ def seed():
         }
     )
 
-    # 2. Kerala Destinations (matching PDF + Figma)
+    # 2. Kerala Destinations
     destinations_data = [
         {
             'name': 'Munnar',
@@ -95,7 +99,7 @@ def seed():
             'best_month': 'September to May',
             'popularity_score': 89,
             'climate': 'Pleasant & Cool (18-26°C)',
-            'image_url': 'https://images.unsplash.com/photo-1588661750275-d147bbfa99b4?auto=format&fit=crop&w=800&q=80',
+            'image_url': '/media/destinations/wayanad.jpg',
             'is_hidden_gem': False,
             'highlights': 'Banasura Sagar Dam, Chembra Peak Heart Lake, Edakkal Caves, Muthanga Wildlife',
             'rating': 4.7,
@@ -115,7 +119,7 @@ def seed():
             'best_month': 'Throughout the year',
             'popularity_score': 76,
             'climate': 'Cool Breeze (16-24°C)',
-            'image_url': 'https://images.unsplash.com/photo-1629853926838-8c1d3c01c0c5?auto=format&fit=crop&w=800&q=80',
+            'image_url': '/media/destinations/vagamon.jpg',
             'is_hidden_gem': True,
             'highlights': 'Vagamon Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point',
             'rating': 4.6,
@@ -155,7 +159,7 @@ def seed():
             'best_month': 'June to January (Post Monsoon)',
             'popularity_score': 78,
             'climate': 'Humid Tropical (22-29°C)',
-            'image_url': 'https://images.unsplash.com/photo-1546548970-71785318a17b?auto=format&fit=crop&w=800&q=80',
+            'image_url': '/media/destinations/athirappilly.jpg',
             'is_hidden_gem': False,
             'highlights': 'Athirappilly Falls, Vazhachal Cascade, Rainforest Viewpoint, Chapra Falls',
             'rating': 4.7,
@@ -225,15 +229,79 @@ def seed():
             'eco_tags': 'Certified Organic Bio-Farms, Low Carbon Footprint',
             'safety_score': 93,
             'crowd_density': 'Low'
+        },
+        {
+            'name': 'Varkala',
+            'district': 'Thiruvananthapuram',
+            'category': 'Beach & Cliff',
+            'description': 'Dramatic red laterite cliffs bordering the Arabian Sea, natural mineral water springs, and vibrant cliff-top sunset cafes.',
+            'average_budget': 7800.0,
+            'best_month': 'October to March',
+            'popularity_score': 88,
+            'climate': 'Coastal Warm (24-31°C)',
+            'image_url': 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+            'is_hidden_gem': False,
+            'highlights': 'Varkala Cliff, Papanasam Holy Beach, Janardhana Swami Temple, Watersports & Yoga',
+            'rating': 4.7,
+            'reviews_count': 1650,
+            'estimated_days': 3,
+            'eco_friendly': True,
+            'eco_tags': 'Solar Cliff Lighting, Responsible Plastic-Free Beachfront',
+            'safety_score': 94,
+            'crowd_density': 'Moderate'
+        },
+        {
+            'name': 'Kozhikode',
+            'district': 'Kozhikode',
+            'category': 'Heritage & Food',
+            'description': 'The City of Spices celebrated as UNESCO City of Literature, legendary Malabar culinary culture, and historic maritime port.',
+            'average_budget': 5000.0,
+            'best_month': 'October to March',
+            'popularity_score': 82,
+            'climate': 'Coastal Humid (25-32°C)',
+            'image_url': 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+            'is_hidden_gem': False,
+            'highlights': 'Kappad Historic Beach, SM Street Sweet Meat Lane, Beypore Dhow Yard, Mananchira Square',
+            'rating': 4.6,
+            'reviews_count': 1200,
+            'estimated_days': 2,
+            'eco_friendly': False,
+            'eco_tags': 'Heritage Conservation, Traditional Uru Woodcraft',
+            'safety_score': 96,
+            'crowd_density': 'Moderate'
+        },
+        {
+            'name': 'Bekal',
+            'district': 'Kasaragod',
+            'category': 'Beach & Fort',
+            'description': 'A giant keyhole-shaped 300-year-old coastal granite fortress rising directly from the waves of the Arabian Sea.',
+            'average_budget': 6200.0,
+            'best_month': 'October to March',
+            'popularity_score': 79,
+            'climate': 'Tropical Coastal (24-31°C)',
+            'image_url': 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+            'is_hidden_gem': True,
+            'highlights': 'Bekal Fort, Bekal Beach Park, Chandragiri Fort, Kappil Backwaters',
+            'rating': 4.6,
+            'reviews_count': 780,
+            'estimated_days': 2,
+            'eco_friendly': True,
+            'eco_tags': 'Coastal Bio-Diversity Protection, Heritage Tourism',
+            'safety_score': 95,
+            'crowd_density': 'Low'
         }
     ]
 
     dest_objs = {}
+
     for data in destinations_data:
-        dest, _ = Destination.objects.update_or_create(name=data['name'], defaults=data)
+        dest, _ = Destination.objects.update_or_create(
+            name=data['name'],
+            defaults=data
+        )
         dest_objs[dest.name] = dest
 
-    # 3. Travel Packages (matching PDF + Figma)
+    # 3. Travel Packages
     packages_data = [
         {
             'destination': dest_objs['Munnar'],
@@ -266,7 +334,7 @@ def seed():
             'tier': 'Eco',
             'is_featured': True,
             'description': 'Stay in elevated bamboo huts, trek Chembra heart lake, and embark on an open jeep safari through Muthanga sanctuary.',
-            'image_url': 'https://images.unsplash.com/photo-1588661750275-d147bbfa99b4?auto=format&fit=crop&w=800&q=80'
+            'image_url': '/media/destinations/wayanad.jpg'
         },
         {
             'destination': dest_objs['Vagamon'],
@@ -277,7 +345,7 @@ def seed():
             'tier': 'Eco',
             'is_featured': False,
             'description': 'Quiet pine forest trails, Kurisumala monastery trek, and tandem paragliding over rolling green meadows.',
-            'image_url': 'https://images.unsplash.com/photo-1629853926838-8c1d3c01c0c5?auto=format&fit=crop&w=800&q=80'
+            'image_url': '/media/destinations/vagamon.jpg'
         },
         {
             'destination': dest_objs['Athirappilly'],
@@ -288,19 +356,23 @@ def seed():
             'tier': 'Standard',
             'is_featured': False,
             'description': 'Witness majestic waterfalls cascading through rainforest, riverbank hiking, and local tribal cultural lunch.',
-            'image_url': 'https://images.unsplash.com/photo-1546548970-71785318a17b?auto=format&fit=crop&w=800&q=80'
+            'image_url': '/media/destinations/athirappilly.jpg'
         }
     ]
 
     pkg_objs = {}
+
     for pdata in packages_data:
-        pkg, _ = TravelPackage.objects.update_or_create(package_name=pdata['package_name'], defaults=pdata)
+        pkg, _ = TravelPackage.objects.update_or_create(
+            package_name=pdata['package_name'],
+            defaults=pdata
+        )
         pkg_objs[pkg.package_name] = pkg
 
-    # 4. Bookings (matching Figma Screen 1 & Screen 4)
+    # 4. Bookings
     import datetime
     today = datetime.date.today()
-    
+
     # Active booking for admin/Rahul
     Booking.objects.update_or_create(
         user=admin_user,
@@ -316,7 +388,15 @@ def seed():
     )
 
     # Secondary users for admin dashboard
-    user2, _ = User.objects.get_or_create(username='ananya_patel', defaults={'email': 'ananya@gmail.com', 'first_name': 'Ananya', 'last_name': 'Patel'})
+    user2, _ = User.objects.get_or_create(
+        username='ananya_patel',
+        defaults={
+            'email': 'ananya@gmail.com',
+            'first_name': 'Ananya',
+            'last_name': 'Patel'
+        }
+    )
+
     Booking.objects.update_or_create(
         user=user2,
         package=pkg_objs['Alappuzha Premium Houseboat Cruise'],
@@ -330,7 +410,15 @@ def seed():
         }
     )
 
-    user3, _ = User.objects.get_or_create(username='david_miller', defaults={'email': 'david@gmail.com', 'first_name': 'David', 'last_name': 'Miller'})
+    user3, _ = User.objects.get_or_create(
+        username='david_miller',
+        defaults={
+            'email': 'david@gmail.com',
+            'first_name': 'David',
+            'last_name': 'Miller'
+        }
+    )
+
     Booking.objects.update_or_create(
         user=user3,
         package=pkg_objs['Wayanad Rainforest & Wildlife Camp'],
@@ -344,7 +432,7 @@ def seed():
         }
     )
 
-    # 5. Travel Buddies (matching Figma Screen 3)
+    # 5. Travel Buddies
     buddies_data = [
         {
             'name': 'Adari H.',
@@ -364,7 +452,7 @@ def seed():
             'compatibility_score': 91.0,
             'trips_completed': 4,
             'bio': 'Architect exploring colonial tea estate bungalows and endemic flora.',
-            'avatar_url': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
+            'avatar_url': 'https://images.pexels.com/photos/35270215/pexels-photo-35270215/free-photo-of-silhouette-of-a-photographer-in-ajmer-india.jpeg?cs=tinysrgb&dpr=1&w=500'
         },
         {
             'name': 'Rohan K.',
@@ -387,18 +475,43 @@ def seed():
 
     # 6. Sample Reviews for NLP Sentiment Engine
     reviews_data = [
-        (dest_objs['Munnar'], 5, "Munnar's misty hills and Kolukkumalai sunrise exceeded all expectations. Incredible stay and delicious tea!", 0.96, "Positive"),
-        (dest_objs['Munnar'], 4, "The tea museum and scenic viewpoints were great, though traffic around town was slightly slow.", 0.72, "Positive"),
-        (dest_objs['Alappuzha'], 5, "Unbelievable serenity on the houseboat! Fresh Karimeen fish fry was delicious and peaceful sunset.", 0.98, "Positive"),
-        (dest_objs['Athirappilly'], 3, "The waterfalls are magnificent during monsoon, but rocky trails can be slippery and crowded on weekends.", 0.45, "Neutral"),
-        (dest_objs['Wayanad'], 5, "Banasura dam speedboating and Chembra peak trek were breathtaking. Very hospitable local homestays.", 0.92, "Positive")
+        (
+            dest_objs['Munnar'], 5,
+            "Munnar's misty hills and Kolukkumalai sunrise exceeded all expectations. Incredible stay and delicious tea!",
+            0.96, "Positive"
+        ),
+        (
+            dest_objs['Munnar'], 4,
+            "The tea museum and scenic viewpoints were great, though traffic around town was slightly slow.",
+            0.72, "Positive"
+        ),
+        (
+            dest_objs['Alappuzha'], 5,
+            "Unbelievable serenity on the houseboat! Fresh Karimeen fish fry was delicious and peaceful sunset.",
+            0.98, "Positive"
+        ),
+        (
+            dest_objs['Athirappilly'], 3,
+            "The waterfalls are magnificent during monsoon, but rocky trails can be slippery and crowded on weekends.",
+            0.45, "Neutral"
+        ),
+        (
+            dest_objs['Wayanad'], 5,
+            "Banasura dam speedboating and Chembra peak trek were breathtaking. Very hospitable local homestays.",
+            0.92, "Positive"
+        )
     ]
-    for dest, rating, text, score, label in reviews_data:
+
+    for dest, rating, review_text, score, label in reviews_data:
         Review.objects.get_or_create(
             destination=dest,
             user=admin_user,
-            review_text=text,
-            defaults={'rating': rating, 'sentiment_score': score, 'sentiment_label': label}
+            review_text=review_text,
+            defaults={
+                'rating': rating,
+                'sentiment_score': score,
+                'sentiment_label': label
+            }
         )
 
     # 7. Document Reminders
@@ -413,7 +526,75 @@ def seed():
         }
     )
 
+    # 8. Certified Eco Hotels & Stays
+    hotels_data = [
+        (dest_objs['Munnar'], "Cloud Valley Plantation Retreat", 3800.0, True, "Organic Tea Terrace, Solar Water Heating", 4.8),
+        (dest_objs['Munnar'], "Misty Windmills Eco-Cottages", 2400.0, True, "Solar Powered, Zero Plastic Waste", 4.6),
+        (dest_objs['Alappuzha'], "Vembanad Heritage Lake Palace", 5500.0, True, "Bio-digester sewage, Farm-to-Table Fish", 4.9),
+        (dest_objs['Alappuzha'], "Marari Fishermen Village Homestay", 1800.0, True, "Rainwater Harvested, Solar Power", 4.7),
+        (dest_objs['Wayanad'], "Chembra Bamboo Heights Eco Camp", 2200.0, True, "Elevated Bamboo Architecture, Tribal Tour", 4.8),
+        (dest_objs['Thekkady'], "Periyar Spice Tree Plantation Lodge", 3100.0, True, "Certified Organic Spice Garden", 4.7),
+        (dest_objs['Varkala'], "Clifftop Ocean Breeze Yoga Villa", 2600.0, True, "Solar Lighting, Ayurvedic Cuisine", 4.6),
+        (dest_objs['Vagamon'], "Pine Forest Mountain View Cabin", 1900.0, True, "Natural Spring Water, Woodcraft Design", 4.5),
+    ]
+
+    for dest, hname, price, eco, tag, rating in hotels_data:
+        Hotel.objects.update_or_create(
+            name=hname,
+            destination=dest,
+            defaults={
+                'price_per_night': price,
+                'is_eco_friendly': eco,
+                'eco_tag': tag,
+                'rating': rating
+            }
+        )
+
+    # 9. Travel Activities
+    activities_data = [
+        (dest_objs['Munnar'], "Kolukkumalai Sunrise 4x4 Jeep Safari", "Adventure", "Witness sunrise from the world's highest tea plantation peak at 7,900 ft.", 1400.0, 4.0, True),
+        (dest_objs['Munnar'], "Eravikulam Alpine Nilgiri Tahr Trail", "Nature", "Guided trek along pristine shola grassland home of endangered Nilgiri Tahr.", 300.0, 2.5, True),
+        (dest_objs['Alappuzha'], "Sunset Canoe Excursion in Narrow Canals", "Sightseeing", "Glide through historic backwater villages and observe coir spinning.", 500.0, 2.0, True),
+        (dest_objs['Wayanad'], "Chembra Peak Heart-Shaped Lake Trek", "Adventure", "Trek to the natural heart-shaped lake that never dries up at 6,900 ft.", 750.0, 4.5, True),
+        (dest_objs['Vagamon'], "Tandem Paragliding over Velvet Meadows", "Adventure", "Fly high above misty green hills with certified pilots.", 2800.0, 1.0, False),
+        (dest_objs['Thekkady'], "Periyar Tiger Reserve Bamboo Rafting", "Adventure", "Dawn-to-dusk hiking and rafting through dense evergreen forest.", 2200.0, 8.0, True),
+        (dest_objs['Varkala'], "Cliffside Sunset Yoga & Meditation Session", "Wellness", "Evening restorative yoga session facing the Arabian Sea sunset.", 400.0, 1.5, True),
+    ]
+
+    for dest, aname, atype, desc, price, dur, eco in activities_data:
+        TravelActivity.objects.update_or_create(
+            name=aname,
+            destination=dest,
+            defaults={
+                'activity_type': atype,
+                'description': desc,
+                'price': price,
+                'duration_hours': dur,
+                'is_eco_friendly': eco
+            }
+        )
+
+    # 10. Sample Notifications
+    notifs_data = [
+        ("Trip Confirmed: Munnar & Tea Hills Trek", "Your upcoming 4-day expedition to Munnar has been confirmed. View your digital QR voucher in your bookings.", "booking", "/bookings/history/"),
+        ("Eravikulam Pass Reminder", "Your Kerala Forest Trek Pass is valid for entry in 4 days. Please arrive at the Rajamala entry point by 10:15 AM.", "reminder", "/bookings/history/"),
+        ("AI Recommendation Alert", "Based on your preference for Cool climate and Trekking, new hidden gems in Vagamon & Chembra Peak are available.", "recommendation", "/assistant/"),
+    ]
+
+    for title, msg, ntype, link in notifs_data:
+        Notification.objects.get_or_create(
+            user=admin_user,
+            title=title,
+            defaults={
+                'message': msg,
+                'notification_type': ntype,
+                'link': link,
+                'is_read': False
+            }
+        )
+
     print("Seeding completed successfully!")
+
 
 if __name__ == '__main__':
     seed()

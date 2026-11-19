@@ -53,15 +53,25 @@
                     </div>
                 </div>
 
-                <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                <div class="pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
                         <span class="text-muted small d-block">Estimated Budget:</span>
                         <span class="fs-4 fw-bold text-success">₹{{ destination.average_budget|floatformat:0 }}</span>
                         <span class="text-muted small"> / {{ destination.estimated_days }} days</span>
                     </div>
-                    <a href="{% url 'assistant_hub' %}?dest={{ destination.name }}" class="btn btn-tm-accent rounded-pill px-4 fw-bold">
-                        <i class="bi bi-stars me-1"></i>Generate AI Plan
-                    </a>
+                    <div class="d-flex gap-2">
+                        {% if user.is_authenticated %}
+                        <form action="{% url 'toggle_wishlist' destination.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if is_wishlisted %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-3 py-2 fw-semibold">
+                                <i class="bi {% if is_wishlisted %}bi-heart-fill{% else %}bi-heart{% endif %} me-1"></i>{% if is_wishlisted %}Wishlisted{% else %}Save Wishlist{% endif %}
+                            </button>
+                        </form>
+                        {% endif %}
+                        <a href="{% url 'assistant_hub' %}?dest={{ destination.name }}" class="btn btn-tm-accent rounded-pill px-4 fw-bold">
+                            <i class="bi bi-stars me-1"></i>Generate AI Plan
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,12 +108,59 @@
                 {% endfor %}
             </div>
 
+            <!-- Recommended Hotels & Stays -->
+            <div class="tm-card p-4 shadow-sm mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-building text-primary me-2"></i>Hotels & Certified Eco-Stays</h5>
+                <div class="row g-3">
+                    {% for h in hotels %}
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="fw-bold mb-0">{{ h.name }}</h6>
+                                <span class="text-warning small"><i class="bi bi-star-fill me-1"></i>{{ h.rating }}</span>
+                            </div>
+                            <div class="text-success fw-bold small mb-2">₹{{ h.price_per_night|floatformat:0 }} / night</div>
+                            {% if h.is_eco_friendly %}
+                            <span class="badge bg-success-subtle text-success small"><i class="bi bi-tree me-1"></i>{{ h.eco_tag }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-muted small">Hotels and estate homestays available upon package booking.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
             <!-- Customer Reviews & Sentiment -->
             <div class="tm-card p-4 shadow-sm mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0">Traveller Reviews & Opinions</h5>
-                    <span class="badge bg-success text-white small">86% Positive Sentiment</span>
+                    <span class="badge bg-success text-white small">NLP Evaluated</span>
                 </div>
+
+                {% if user.is_authenticated %}
+                <!-- Write Review Form -->
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <h6 class="fw-bold mb-2 small"><i class="bi bi-pencil-square me-1"></i>Share Your Travel Experience</h6>
+                    <form action="{% url 'add_review' destination.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label class="form-label small fw-semibold text-muted">Rating:</label>
+                            <select name="rating" class="form-select form-select-sm d-inline-block w-auto ms-2">
+                                <option value="5">⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                                <option value="3">⭐⭐⭐ (3 - Average)</option>
+                                <option value="2">⭐⭐ (2 - Below Average)</option>
+                                <option value="1">⭐ (1 - Poor)</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <textarea name="review_text" class="form-control form-control-sm" rows="2" placeholder="Write about views, homestay hospitality, food, or weather..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-tm-accent rounded-pill px-3 fw-semibold">Submit Review</button>
+                    </form>
+                </div>
+                {% endif %}
 
                 {% for review in reviews %}
                 <div class="py-2 border-bottom">
@@ -112,7 +169,7 @@
                         <span class="text-warning small"><i class="bi bi-star-fill me-1"></i>{{ review.rating }}/5</span>
                     </div>
                     <p class="text-secondary small mb-1">{{ review.review_text }}</p>
-                    <span class="badge bg-light text-muted" style="font-size: 0.7rem;">NLP Score: {{ review.sentiment_score }} ({{ review.sentiment_label }})</span>
+                    <span class="badge bg-light text-muted" style="font-size: 0.7rem;">NLP Sentiment: {{ review.sentiment_label }} (Score: {{ review.sentiment_score|floatformat:2 }})</span>
                 </div>
                 {% empty %}
                 <div class="text-muted small">Be the first to leave a review for {{ destination.name }}!</div>

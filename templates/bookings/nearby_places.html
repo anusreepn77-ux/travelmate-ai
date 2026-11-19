@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nearby Places Finder - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-tm-primary text-white px-2 py-1 rounded-pill small">Utility Module A</span>
+                <span class="badge bg-success-subtle text-success small"><i class="bi bi-geo-alt-fill me-1"></i>Verified Local Directory</span>
+            </div>
+            <h4 class="fw-bold mb-0">Nearby Places & Essential Services</h4>
+            <span class="text-muted small">Locate verified hospitals, 24/7 ATMs, pharmacies, police assistance and top authentic dining</span>
+        </div>
+        <a href="{% url 'assistant_hub' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            &larr; AI Assistant Hub
+        </a>
+    </div>
+
+    <!-- Filter Control Bar -->
+    <div class="tm-card p-3 shadow-sm mb-4">
+        <form method="GET" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold text-muted mb-1">Choose Destination</label>
+                <select name="dest" class="form-select form-select-sm" onchange="this.form.submit()">
+                    {% for d in all_dests %}
+                        <option value="{{ d }}" {% if selected_dest == d %}selected{% endif %}>{{ d }}, Kerala</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold text-muted mb-1">Filter by Service Category</label>
+                <select name="type" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="all" {% if selected_type == 'all' %}selected{% endif %}>All Nearby Services</option>
+                    <option value="Hospital" {% if selected_type == 'Hospital' %}selected{% endif %}>Hospitals & Clinics</option>
+                    <option value="Pharmacy" {% if selected_type == 'Pharmacy' %}selected{% endif %}>Pharmacies</option>
+                    <option value="ATM" {% if selected_type == 'ATM' %}selected{% endif %}>ATMs & Banks</option>
+                    <option value="Restaurant" {% if selected_type == 'Restaurant' %}selected{% endif %}>Restaurants & Dining</option>
+                    <option value="Emergency" {% if selected_type == 'Emergency' %}selected{% endif %}>Tourist Police & SOS</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-sm btn-tm-accent w-100 rounded-pill">Refresh</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Places Listing Grid -->
+    <div class="row g-3">
+        {% for s in services %}
+        <div class="col-md-6 col-lg-4">
+            <div class="tm-card p-3 shadow-sm h-100 border bg-white">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge {% if s.type == 'Hospital' or s.type == 'Emergency' %}bg-danger{% elif s.type == 'Pharmacy' %}bg-warning text-dark{% elif s.type == 'Restaurant' %}bg-success{% else %}bg-primary{% endif %} rounded-pill small">
+                        {{ s.type }}
+                    </span>
+                    <span class="text-warning small"><i class="bi bi-star-fill me-1"></i>{{ s.rating }}</span>
+                </div>
+
+                <h6 class="fw-bold mb-1">{{ s.name }}</h6>
+                <div class="text-muted small mb-3"><i class="bi bi-pin-map-fill text-danger me-1"></i>{{ s.distance }} from central hub</div>
+
+                <div class="border-top pt-2 d-flex justify-content-between align-items-center">
+                    <span class="small text-muted"><i class="bi bi-telephone-fill text-success me-1"></i>{{ s.contact }}</span>
+                    <a href="https://maps.google.com/?q={{ s.name }}+{{ selected_dest }}+Kerala" target="_blank" class="btn btn-xs btn-outline-primary btn-sm py-0 px-2 rounded-pill">
+                        Map &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4 text-muted">No nearby places matched the selected filter.</div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

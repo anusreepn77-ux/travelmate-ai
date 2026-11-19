@@ -1,46 +1,280 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — TravelMate AI</title>
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tm-navy: #173B57;
+            --tm-teal: #20A69A;
+            --tm-teal-dark: #168177;
+            --tm-canvas: #F5F8FA;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--tm-canvas);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-container {
+            width: 100%;
+            max-width: 1020px;
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(23, 59, 87, 0.12);
+            overflow: hidden;
+            display: flex;
+            min-height: 620px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .auth-hero {
+            flex: 1.1;
+            background: linear-gradient(135deg, rgba(23, 59, 87, 0.92), rgba(32, 166, 154, 0.86)),
+                        url('https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            padding: 48px;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .auth-form-pane {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #FFFFFF;
+        }
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 12px 16px;
+        }
+        .form-floating > .form-control {
+            border-radius: 12px;
+            border: 1.5px solid #E2E8F0;
+            height: 56px;
+            font-size: 0.95rem;
+        }
+        .form-floating > .form-control:focus {
+            border-color: var(--tm-teal);
+            box-shadow: 0 0 0 4px rgba(32, 166, 154, 0.15);
+        }
+        .btn-auth-primary {
+            background-color: var(--tm-teal);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        .btn-auth-primary:hover {
+            background-color: var(--tm-teal-dark);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(32, 166, 154, 0.25);
+        }
+        .demo-chip {
+            background: #F1F5F9;
+            border: 1px dashed #CBD5E1;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .demo-chip:hover {
+            background: #E2E8F0;
+            border-color: #94A3B8;
+            color: var(--tm-navy);
+        }
+        @media (max-width: 900px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 480px;
+            }
+            .auth-hero {
+                padding: 32px;
+                min-height: 220px;
+            }
+            .auth-form-pane {
+                padding: 32px;
+            }
+            .auth-stats-row {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
 
-{% block title %}Login - TravelMate AI{% endblock %}
-
-{% block content %}
-<div class="container py-5" style="max-width: 480px;">
-    <div class="tm-card p-4 shadow-lg">
-        <div class="text-center mb-4">
-            <span class="badge bg-tm-primary p-2 rounded-circle mb-2"><i class="bi bi-person-fill text-white fs-4"></i></span>
-            <h3 class="fw-bold mb-1">Welcome Back</h3>
-            <p class="text-muted small">Log in to access your dashboard, bookings, and AI planner</p>
+<div class="auth-container">
+    <!-- Left Hero Banner -->
+    <div class="auth-hero">
+        <div>
+            <a href="{% url 'home' %}" class="brand-logo mb-3">
+                <span class="p-2 bg-white bg-opacity-20 rounded-circle d-inline-flex"><i class="bi bi-compass text-white"></i></span>
+                TravelMate AI
+            </a>
+            <div class="mt-4">
+                <span class="brand-badge"><i class="bi bi-stars text-warning"></i> Kerala Tourism Intelligence</span>
+                <h2 class="fw-extrabold display-6 fw-bold mb-3" style="line-height: 1.2;">Explore More.<br>Plan Smarter.<br>Travel Better.</h2>
+                <p class="text-white-50 small mb-0" style="max-width: 380px;">
+                    Personalized itineraries powered by Scikit-learn ML models & Google Gemini live copilot across 12 pristine Kerala destinations.
+                </p>
+            </div>
         </div>
 
-        <form method="POST">
+        <div class="auth-stats-row d-flex gap-3 pt-4 border-top border-white border-opacity-20">
+            <div class="stat-badge flex-fill">
+                <div class="fs-5 fw-bold text-white">12 Spots</div>
+                <div class="text-white-50 small" style="font-size: 0.72rem;">Munnar to Bekal</div>
+            </div>
+            <div class="stat-badge flex-fill">
+                <div class="fs-5 fw-bold text-white">11 AI Tools</div>
+                <div class="text-white-50 small" style="font-size: 0.72rem;">Predictor & Plans</div>
+            </div>
+            <div class="stat-badge flex-fill">
+                <div class="fs-5 fw-bold text-white">4 ML Models</div>
+                <div class="text-white-50 small" style="font-size: 0.72rem;">Trained & Verified</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="auth-form-pane">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: var(--tm-navy);">Welcome Back</h3>
+                <p class="text-muted small mb-0">Sign in to your TravelMate account</p>
+            </div>
+            <a href="{% url 'home' %}" class="btn btn-sm btn-light rounded-pill px-3 text-muted">
+                <i class="bi bi-house me-1"></i>Home
+            </a>
+        </div>
+
+        <!-- Demo Accounts Quick Auto-fill -->
+        <div class="p-3 bg-light rounded-3 mb-4 border">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted fw-semibold" style="font-size: 0.75rem;"><i class="bi bi-key-fill text-warning me-1"></i>ONE-CLICK DEMO LOGIN</span>
+                <span class="badge bg-secondary-subtle text-secondary small">Academic Demo</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="demo-chip flex-fill text-center" onclick="fillCreds('admin', 'admin123')">
+                    <strong>Admin Role</strong><br><span style="font-size: 0.7rem;">admin / admin123</span>
+                </button>
+                <button type="button" class="demo-chip flex-fill text-center" onclick="fillCreds('ananya_patel', 'admin123')">
+                    <strong>Traveller Role</strong><br><span style="font-size: 0.7rem;">ananya_patel</span>
+                </button>
+            </div>
+        </div>
+
+        <form method="POST" id="loginForm">
             {% csrf_token %}
 
             {% if form.errors %}
-            <div class="alert alert-danger small p-2 mb-3">
-                Invalid username or password. Please try again.
+            <div class="alert alert-danger small p-3 rounded-3 mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                <div>Invalid username or password. Please check your credentials or click a demo chip above.</div>
             </div>
             {% endif %}
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold small">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} small p-3 rounded-3 mb-3">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="form-floating mb-3">
+                <input type="text" name="username" class="form-control" id="floatingUsername" placeholder="Username" required autofocus>
+                <label for="floatingUsername"><i class="bi bi-person me-2"></i>Username</label>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold small">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
-            </div>
-
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-tm-primary py-2 fw-bold">
-                    Sign In &rarr;
+            <div class="form-floating mb-3 position-relative">
+                <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                <label for="floatingPassword"><i class="bi bi-lock me-2"></i>Password</label>
+                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y me-3 text-muted text-decoration-none" onclick="togglePass()">
+                    <i class="bi bi-eye" id="eyeIcon"></i>
                 </button>
             </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                    <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                </div>
+                <span class="small text-muted">Protected with SSL</span>
+            </div>
+
+            <button type="submit" class="btn btn-auth-primary w-100 mb-3">
+                Sign In to Dashboard &rarr;
+            </button>
         </form>
 
-        <div class="text-center mt-4 pt-3 border-top small text-muted">
-            Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-primary">Register Here</a>
+        <div class="text-center pt-3 border-top small text-muted">
+            Don't have an account yet?
+            <a href="{% url 'register' %}" class="fw-bold text-decoration-none" style="color: var(--tm-teal);">Create Traveller Account &rarr;</a>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script>
+function fillCreds(u, p) {
+    document.getElementById('floatingUsername').value = u;
+    document.getElementById('floatingPassword').value = p;
+}
+function togglePass() {
+    const input = document.getElementById('floatingPassword');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications - TravelMate AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0" style="max-width: 760px;">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <h4 class="fw-bold mb-0"><i class="bi bi-bell-fill text-warning me-2"></i>Notifications</h4>
+            <span class="text-muted small">Stay updated on trip reminders, booking approvals, and AI insights</span>
+        </div>
+        <a href="{% url 'user_dashboard' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            &larr; Dashboard
+        </a>
+    </div>
+
+    <div class="tm-card p-4 shadow-sm">
+        <div class="space-y-3">
+            {% for n in notifications %}
+            <div class="p-3 rounded-3 border mb-3 {% if not n.is_read %}bg-light border-primary{% else %}bg-white{% endif %}">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge {% if n.notification_type == 'booking' %}bg-success{% elif n.notification_type == 'reminder' %}bg-warning text-dark{% elif n.notification_type == 'recommendation' %}bg-info{% else %}bg-primary{% endif %} rounded-pill small">
+                            {{ n.get_notification_type_display }}
+                        </span>
+                        <h6 class="fw-bold mb-0">{{ n.title }}</h6>
+                    </div>
+                    <span class="text-muted small">{{ n.created_at|timesince }} ago</span>
+                </div>
+                <p class="text-muted small mb-2 mt-2">{{ n.message }}</p>
+                {% if n.link %}
+                <a href="{{ n.link }}" class="btn btn-xs btn-outline-primary btn-sm py-0 px-2 rounded-pill">
+                    View Details &rarr;
+                </a>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-bell-slash text-muted display-4"></i>
+                <h6 class="fw-bold mt-3">No Notifications</h6>
+                <p class="text-muted small">You're all caught up! Trip updates and personalized alerts will appear here.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

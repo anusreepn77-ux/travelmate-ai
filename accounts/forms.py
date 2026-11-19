@@ -20,3 +20,11 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['username'].widget.attrs.update({'placeholder': 'Choose a username'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Create a password'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm your password'})
+
+    def _post_clean(self):
+        """Skip all password validation (similarity, length, common, numeric)."""
+        super(forms.ModelForm, self)._post_clean()
+        # Set the password on the user instance without running validators
+        password = self.cleaned_data.get('password2')
+        if password:
+            self.instance.set_password(password)

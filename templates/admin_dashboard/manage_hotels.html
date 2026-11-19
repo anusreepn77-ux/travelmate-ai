@@ -1,0 +1,117 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Manage Hotels - TravelMate AI Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <h4 class="fw-bold mb-0">Hotel & Accommodation Management</h4>
+            <span class="text-muted small">Manage hotels, eco-friendly certifications, and pricing across Kerala spots</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                &larr; Back to Admin Center
+            </a>
+            <button class="btn btn-sm btn-tm-accent rounded-pill px-3" data-bs-toggle="collapse" data-bs-target="#addHotelForm">
+                <i class="bi bi-plus-circle me-1"></i>Add New Hotel
+            </button>
+        </div>
+    </div>
+
+    <!-- Collapse Form to Add Hotel -->
+    <div class="collapse mb-4" id="addHotelForm">
+        <div class="tm-card p-4 shadow-sm border bg-white">
+            <h6 class="fw-bold mb-3"><i class="bi bi-building me-1"></i>Add Hotel / Homestay</h6>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Hotel / Resort Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Misty Woods Eco Retreat" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Destination</label>
+                        <select name="destination_id" class="form-select" required>
+                            {% for d in destinations %}
+                                <option value="{{ d.id }}">{{ d.name }} ({{ d.district }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Price per Night (₹)</label>
+                        <input type="number" name="price" class="form-control" value="2800" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Star Rating (1-5)</label>
+                        <input type="number" step="0.1" name="rating" class="form-control" value="4.7" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Eco-Friendly Tags</label>
+                        <input type="text" name="eco_tag" class="form-control" value="Solar Powered, Organic Food, Rainwater Harvesting">
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_eco_friendly" id="ecoCheck" checked>
+                            <label class="form-check-label small" for="ecoCheck">
+                                Certified Eco-Friendly Accommodation
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-tm-accent rounded-pill px-4">Save Hotel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hotels Table -->
+    <div class="tm-card p-4 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th>Hotel Name</th>
+                        <th>Destination</th>
+                        <th>Price / Night</th>
+                        <th>Rating</th>
+                        <th>Eco-Friendly Tag</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    {% for h in hotels %}
+                    <tr>
+                        <td class="fw-bold">{{ h.name }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ h.destination.name }}</span></td>
+                        <td class="fw-semibold text-dark">₹{{ h.price_per_night|floatformat:0 }}</td>
+                        <td><span class="text-warning"><i class="bi bi-star-fill me-1"></i>{{ h.rating }}</span></td>
+                        <td>
+                            {% if h.is_eco_friendly %}
+                                <span class="badge bg-success-subtle text-success"><i class="bi bi-tree me-1"></i>{{ h.eco_tag|truncatechars:35 }}</span>
+                            {% else %}
+                                <span class="text-muted small">Standard Property</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{% url 'delete_hotel' h.id %}" method="POST" class="d-inline" onsubmit="return confirm('Delete this hotel?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No hotels added yet. Click 'Add New Hotel' above to register properties.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

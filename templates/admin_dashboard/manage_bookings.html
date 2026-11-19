@@ -1,0 +1,109 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Manage Bookings - TravelMate AI Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
+        <div>
+            <h4 class="fw-bold mb-0">Booking Management</h4>
+            <span class="text-muted small">View, approve, reject, and update status of customer bookings</span>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            &larr; Back to Admin Center
+        </a>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="?status=all" class="btn btn-sm {% if selected_status == 'all' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+            All ({{ total_count }})
+        </a>
+        <a href="?status=pending" class="btn btn-sm {% if selected_status == 'pending' %}btn-warning text-dark{% else %}btn-outline-warning text-dark{% endif %} rounded-pill px-3">
+            Pending
+        </a>
+        <a href="?status=confirmed" class="btn btn-sm {% if selected_status == 'confirmed' %}btn-success{% else %}btn-outline-success{% endif %} rounded-pill px-3">
+            Confirmed
+        </a>
+        <a href="?status=completed" class="btn btn-sm {% if selected_status == 'completed' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill px-3">
+            Completed
+        </a>
+        <a href="?status=cancelled" class="btn btn-sm {% if selected_status == 'cancelled' %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-3">
+            Cancelled
+        </a>
+    </div>
+
+    <div class="tm-card p-4 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Traveller</th>
+                        <th>Destination / Package</th>
+                        <th>Travel Date</th>
+                        <th>Guests</th>
+                        <th>Total</th>
+                        <th>Voucher</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    {% for b in bookings %}
+                    <tr>
+                        <td class="fw-bold text-primary">#{{ b.id }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ b.user.get_full_name|default:b.user.username }}</div>
+                            <span class="text-muted small">{{ b.user.email }}</span>
+                        </td>
+                        <td>
+                            {% if b.package %}
+                                <div class="fw-semibold">{{ b.package.package_name }}</div>
+                                <span class="badge bg-light text-dark border">{{ b.package.destination.name }}</span>
+                            {% elif b.destination %}
+                                <div class="fw-semibold">{{ b.destination.name }} Trip</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ b.travel_date|date:"M d, Y" }}</td>
+                        <td>{{ b.number_of_people }} Person(s)</td>
+                        <td class="fw-bold">₹{{ b.total_amount|floatformat:0 }}</td>
+                        <td><code>{{ b.voucher_code }}</code></td>
+                        <td>
+                            {% if b.status == 'Confirmed' %}
+                                <span class="badge bg-success-subtle text-success px-2 py-1">Confirmed</span>
+                            {% elif b.status == 'Pending' %}
+                                <span class="badge bg-warning-subtle text-warning px-2 py-1">Pending</span>
+                            {% elif b.status == 'Completed' %}
+                                <span class="badge bg-primary-subtle text-primary px-2 py-1">Completed</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger px-2 py-1">{{ b.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{% url 'update_booking_status' b.id %}" method="POST" class="d-flex gap-1">
+                                {% csrf_token %}
+                                <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                    <option value="Confirmed" {% if b.status == 'Confirmed' %}selected{% endif %}>Confirm</option>
+                                    <option value="Pending" {% if b.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Completed" {% if b.status == 'Completed' %}selected{% endif %}>Complete</option>
+                                    <option value="Cancelled" {% if b.status == 'Cancelled' %}selected{% endif %}>Cancel</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2 rounded">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">No bookings found for the selected status.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- Smart Expeditions: 4 Quick Shortcut Tiles -->
+            <!-- Smart Expeditions: Quick Shortcut Tiles -->
             <div class="shortcut-grid">
                 <a href="{% url 'assistant_hub' %}?dest=Munnar&tab=planning" class="shortcut-tile">
                     <div class="shortcut-icon bg-primary bg-opacity-10 text-primary">
@@ -102,22 +102,57 @@
                     <div class="text-muted" style="font-size: 0.7rem;">Save ~32% on stays</div>
                 </a>
 
-                <a href="{% url 'assistant_hub' %}?tab=safety" class="shortcut-tile">
+                <a href="{% url 'wishlist' %}" class="shortcut-tile">
                     <div class="shortcut-icon bg-danger bg-opacity-10 text-danger">
-                        <i class="bi bi-shield-check"></i>
+                        <i class="bi bi-heart-fill"></i>
                     </div>
-                    <div class="fw-bold small">Safety & Alerts</div>
-                    <div class="text-muted" style="font-size: 0.7rem;">Landslide & SOS</div>
+                    <div class="fw-bold small">My Wishlist</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Saved destinations</div>
                 </a>
 
-                <a href="{% url 'destination_list' %}?district=Vagamon" class="shortcut-tile">
+                <a href="{% url 'multi_destination_explorer' %}" class="shortcut-tile">
                     <div class="shortcut-icon bg-warning bg-opacity-10 text-warning">
-                        <i class="bi bi-compass"></i>
+                        <i class="bi bi-map-fill"></i>
                     </div>
-                    <div class="fw-bold small">Hidden Spots</div>
-                    <div class="text-muted" style="font-size: 0.7rem;">Offbeat & Quiet</div>
+                    <div class="fw-bold small">Multi-Route</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Kerala Circuit Map</div>
                 </a>
             </div>
+
+            <!-- AI Recommended Destinations (Trained ML KNN + TF-IDF) -->
+            {% if ai_recommendations %}
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="fw-bold mb-0">AI Personalized Picks For You</h5>
+                            <span class="badge bg-tm-accent text-white small"><i class="bi bi-cpu me-1"></i>KNN ML Match</span>
+                        </div>
+                        <span class="text-muted small">Tuned to your preference: {{ preference.travel_style }} &bull; {{ preference.preferred_climate }} climate</span>
+                    </div>
+                    <a href="{% url 'preferences' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Edit Preferences</a>
+                </div>
+
+                <div class="row g-3">
+                    {% for rec in ai_recommendations %}
+                    <div class="col-md-4">
+                        <div class="tm-card h-100 p-3 shadow-sm border bg-white">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="fw-bold mb-0">{{ rec.destination.name }}</h6>
+                                <span class="badge bg-success text-white">{{ rec.match_percentage }}% Match</span>
+                            </div>
+                            <span class="badge bg-light text-dark border small mb-2">{{ rec.destination.category }}</span>
+                            <p class="text-muted small mb-2">{{ rec.reason }}</p>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                <span class="fw-bold small">₹{{ rec.destination.average_budget|floatformat:0 }}</span>
+                                <a href="{% url 'destination_detail' rec.destination.id %}" class="btn btn-xs btn-outline-primary btn-sm py-0 px-2 rounded-pill">View &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
             <!-- Featured Kerala Destinations -->
             <div class="d-flex justify-content-between align-items-center mb-3">

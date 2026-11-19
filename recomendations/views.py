@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from accounts.models import TravelPreference
 from destinations.models import Destination
-from .models import TravelBuddy, SavedItinerary
+from .models import TravelBuddy, SavedItinerary, BuddyConnectionRequest
 from .ml_engine import (
     recommend_destinations,
     predict_best_time,
@@ -19,6 +19,7 @@ from .ml_engine import (
     get_safety_radar,
     calculate_route_matrix,
     generate_ai_trip_plan,
+    call_gemini_api,
 )
 
 def assistant_hub(request):
@@ -26,10 +27,8 @@ def assistant_hub(request):
     Figma Screen 3: AI Travel Intelligence Hub
     Interactive showcase of all 11 AI & ML tools with real-time outputs.
     """
-    # Active tab from query param
     active_tab = request.GET.get('tab', 'all')
 
-    # Get user preferences if authenticated
     if request.user.is_authenticated:
         pref, _ = TravelPreference.objects.get_or_create(
             user=request.user,
@@ -45,14 +44,14 @@ def assistant_hub(request):
         budget = 15000.0
         preferred_category = 'Hill Station'
 
-    # Tool 1: ML Destination Recommender
+    # Tool 1: ML Destination Recommender (KNN + TF-IDF)
     recommendations = recommend_destinations(user_interests, preferred_climate, budget, preferred_category)
 
     # Tool 2 & Spotlight: AI Trip Planner / 48-Hour Generator
     selected_dest = request.GET.get('dest', 'Munnar')
     itinerary = generate_ai_trip_plan(selected_dest, days=3, budget=budget)
 
-    # Tool 3: Best Time to Visit Predictor
+    # Tool 3: Best Time to Visit Predictor (Random Forest & Decision Tree)
     climate_info = predict_best_time(selected_dest)
 
     # Tool 4: Hidden Gems
@@ -61,18 +60,19 @@ def assistant_hub(request):
     # Tool 5: Travel Buddy Matching
     buddies = match_travel_buddies(user_interests, selected_dest)
 
-    # Tool 6: Review Sentiment Analyzer (Sample or user submitted)
+    # Tool 6: Review Sentiment Analyzer
     sample_review = request.GET.get('review_text', "Kolukkumalai sunrise and pristine tea gardens were an incredible experience. Homestay food was delicious and hosts were hospitable!")
     sentiment = analyze_review_sentiment(sample_review)
 
-    # Tool 7: AI Cost Optimizer
-    cost_optimization = optimize_travel_cost(package_price=18400.0, days=4)
+    # Tool 7: AI Cost Optimizer (ML Regressor + Gemini Tips)
+    cost_optimization = optimize_travel_cost(destination_name=selected_dest, package_price=18400.0, days=4, travelers=2)
 
-    # Tool 8: AI Outfit & Packing Stylist
+    # Tool 8: AI Outfit & Packing Stylist (Gemini API)
     outfits = get_outfit_recommendations(selected_dest)
 
     # Tool 9: Malayalam Dialect Voice AI
-    translations = get_malayalam_translations()
+    custom_phrase = request.GET.get('phrase', '')
+    translations = get_malayalam_translations(custom_phrase)
 
     # Tool 10: Sustainable Travel Footprint
     carbon = calculate_carbon_footprint(days=4)
@@ -80,7 +80,7 @@ def assistant_hub(request):
     # Tool 11: Safety Score Radar
     safety = get_safety_radar(selected_dest)
 
-    # Bonus: Multi-Destination Route Matrix
+    # Utility: Multi-Destination Route Matrix
     route = calculate_route_matrix(['Alappuzha', 'Athirappilly', 'Munnar', 'Thekkady'])
 
     all_destinations = Destination.objects.all()
@@ -114,10 +114,7 @@ def assistant_hub(request):
 
 @csrf_exempt
 def ask_ai(request):
-    """
-    API endpoint for interactive 'Ask TravelMate AI' conversational widget
-    answering route questions, packing checklists, and local recommendations.
-    """
+    """API endpoint for interactive 'Ask TravelMate AI' conversational widget."""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -128,8 +125,20 @@ def ask_ai(request):
         if not query:
             return JsonResponse({'response': "Please enter a travel question! For example: 'What to pack for Munnar trek?'"})
 
-        q_lower = query.lower()
+        try:
+            gemini_prompt = (
+                f"You are TravelMate AI, an expert travel copilot specialized in Kerala, India. "
+                f"Answer the following traveller question accurately, helpfully, and concisely (2-4 bullet points with emojis): "
+                f"'{query}'"
+            )
+            live_reply = call_gemini_api(gemini_prompt)
+            if live_reply:
+                return JsonResponse({'status': 'success', 'query': query, 'response': live_reply, 'source': 'Google Gemini Live API'})
+        except Exception:
+            pass
 
+        # Fallback intelligent keyword responder
+        q_lower = query.lower()
         if 'pack' in q_lower or 'clothes' in q_lower or 'outfit' in q_lower:
             reply = (
                 "🧥 **Munnar Packing Recommendations:**\n"
@@ -173,7 +182,29 @@ def ask_ai(request):
 
 @csrf_exempt
 def sentiment_api(request):
-    """API for dynamic testing of review sentiment."""
-    text = request.POST.get('review_text', '')
+    """API for dynamic testing of review sentiment using trained Scikit-learn NLP model."""
+    text = request.POST.get('review_text', '') or request.GET.get('review_text', '')
     res = analyze_review_sentiment(text)
     return JsonResponse(res)
+
+@csrf_exempt
+def translate_api(request):
+    """API endpoint for live Malayalam translation."""
+    phrase = request.POST.get('phrase', '') or request.GET.get('phrase', '')
+    res = get_malayalam_translations(phrase)
+    return JsonResponse({'status': 'success', 'results': res})
+
+@login_required
+def connect_buddy(request, buddy_id):
+    """Send connection request to a travel buddy."""
+    buddy = get_object_or_404(TravelBuddy, pk=buddy_id)
+    req_obj, created = BuddyConnectionRequest.objects.get_or_create(
+        from_user=request.user,
+        to_buddy=buddy,
+        defaults={'status': 'pending'}
+    )
+    return JsonResponse({
+        'status': 'success',
+        'message': f"Connection request sent to {buddy.name}!",
+        'created': created
+    })

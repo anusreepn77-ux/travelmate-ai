@@ -1,0 +1,61 @@
+name,district,category,climate,average_budget,popularity_score,highlights,rating,eco_friendly
+Munnar,Idukki,Hill Station,Cool & Misty,8500,94,"Tea gardens, Eravikulam National Park, Mattupetty Dam, Anamudi Peak",4.8,1
+Munnar Spot 1,Idukki,Hill Station,Cool & Misty,7225,90,"Tea gardens, Eravikulam National Park, Mattupetty Dam, Anamudi Peak",4.9,1
+Munnar Spot 2,Idukki,Hill Station,Cool & Misty,9180,91,"Tea gardens, Eravikulam National Park, Mattupetty Dam, Anamudi Peak",4.7,1
+Munnar Spot 3,Idukki,Hill Station,Cool & Misty,7225,90,"Tea gardens, Eravikulam National Park, Mattupetty Dam, Anamudi Peak",4.8,1
+Munnar Spot 4,Idukki,Hill Station,Cool & Misty,7225,90,"Tea gardens, Eravikulam National Park, Mattupetty Dam, Anamudi Peak",4.8,1
+Alappuzha,Alappuzha,Backwaters,Tropical Coastal,11000,92,"Vembanad Lake, Houseboat Cruise, Marari Beach, Pathiramanal",4.9,1
+Alappuzha Spot 1,Alappuzha,Backwaters,Tropical Coastal,9350,90,"Vembanad Lake, Houseboat Cruise, Marari Beach, Pathiramanal",4.8,1
+Alappuzha Spot 2,Alappuzha,Backwaters,Tropical Coastal,9350,93,"Vembanad Lake, Houseboat Cruise, Marari Beach, Pathiramanal",5.0,1
+Alappuzha Spot 3,Alappuzha,Backwaters,Tropical Coastal,11880,92,"Vembanad Lake, Houseboat Cruise, Marari Beach, Pathiramanal",4.8,1
+Alappuzha Spot 4,Alappuzha,Backwaters,Tropical Coastal,10120,92,"Vembanad Lake, Houseboat Cruise, Marari Beach, Pathiramanal",5.0,1
+Wayanad,Wayanad,Mountain & Nature,Pleasant & Cool,7200,89,"Banasura Sagar Dam, Chembra Peak, Edakkal Caves, Muthanga Wildlife",4.7,1
+Wayanad Spot 1,Wayanad,Mountain & Nature,Pleasant & Cool,7776,91,"Banasura Sagar Dam, Chembra Peak, Edakkal Caves, Muthanga Wildlife",4.8,1
+Wayanad Spot 2,Wayanad,Mountain & Nature,Pleasant & Cool,6120,86,"Banasura Sagar Dam, Chembra Peak, Edakkal Caves, Muthanga Wildlife",4.6,1
+Wayanad Spot 3,Wayanad,Mountain & Nature,Pleasant & Cool,6120,87,"Banasura Sagar Dam, Chembra Peak, Edakkal Caves, Muthanga Wildlife",4.8,1
+Wayanad Spot 4,Wayanad,Mountain & Nature,Pleasant & Cool,8280,85,"Banasura Sagar Dam, Chembra Peak, Edakkal Caves, Muthanga Wildlife",4.7,1
+Vagamon,Idukki,Hill Station,Cool Breeze,5500,76,"Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point",4.6,1
+Vagamon Spot 1,Idukki,Hill Station,Cool Breeze,6324,75,"Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point",4.7,1
+Vagamon Spot 2,Idukki,Hill Station,Cool Breeze,5940,79,"Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point",4.6,1
+Vagamon Spot 3,Idukki,Hill Station,Cool Breeze,5940,80,"Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point",4.6,1
+Vagamon Spot 4,Idukki,Hill Station,Cool Breeze,5060,75,"Pine Forest, Kurisumala Ashram, Green Meadows, Paragliding Point",4.5,1
+Thekkady,Idukki,Wildlife Sanctuary,Temperate Forest,9000,91,"Periyar Boat Safari, Spice Garden Walk, Bamboo Rafting, Elephant Junction",4.8,1
+Thekkady Spot 1,Idukki,Wildlife Sanctuary,Temperate Forest,8280,87,"Periyar Boat Safari, Spice Garden Walk, Bamboo Rafting, Elephant Junction",4.7,1
+Thekkady Spot 2,Idukki,Wildlife Sanctuary,Temperate Forest,10350,94,"Periyar Boat Safari, Spice Garden Walk, Bamboo Rafting, Elephant Junction",4.7,1
+Thekkady Spot 3,Idukki,Wildlife Sanctuary,Temperate Forest,7650,90,"Periyar Boat Safari, Spice Garden Walk, Bamboo Rafting, Elephant Junction",4.8,1
+Thekkady Spot 4,Idukki,Wildlife Sanctuary,Temperate Forest,9720,94,"Periyar Boat Safari, Spice Garden Walk, Bamboo Rafting, Elephant Junction",4.7,1
+Athirappilly,Thrissur,Waterfalls & Forest,Humid Tropical,4500,78,"Athirappilly Falls, Vazhachal Cascade, Sholayar Rainforest, Chapra Falls",4.7,1
+Athirappilly Spot 1,Thrissur,Waterfalls & Forest,Humid Tropical,4860,78,"Athirappilly Falls, Vazhachal Cascade, Sholayar Rainforest, Chapra Falls",4.7,1
+Athirappilly Spot 2,Thrissur,Waterfalls & Forest,Humid Tropical,4860,75,"Athirappilly Falls, Vazhachal Cascade, Sholayar Rainforest, Chapra Falls",4.6,1
+Athirappilly Spot 3,Thrissur,Waterfalls & Forest,Humid Tropical,4140,76,"Athirappilly Falls, Vazhachal Cascade, Sholayar Rainforest, Chapra Falls",4.8,1
+Athirappilly Spot 4,Thrissur,Waterfalls & Forest,Humid Tropical,3825,82,"Athirappilly Falls, Vazhachal Cascade, Sholayar Rainforest, Chapra Falls",4.6,1
+Palakkad,Palakkad,Heritage & Valley,Warm & Breezy,4800,75,"Malampuzha Dam, Nelliyampathy Hills, Silent Valley, Dhoni Waterfalls",4.6,1
+Palakkad Spot 1,Palakkad,Heritage & Valley,Warm & Breezy,5520,76,"Malampuzha Dam, Nelliyampathy Hills, Silent Valley, Dhoni Waterfalls",4.6,1
+Palakkad Spot 2,Palakkad,Heritage & Valley,Warm & Breezy,4416,73,"Malampuzha Dam, Nelliyampathy Hills, Silent Valley, Dhoni Waterfalls",4.7,1
+Palakkad Spot 3,Palakkad,Heritage & Valley,Warm & Breezy,5520,74,"Malampuzha Dam, Nelliyampathy Hills, Silent Valley, Dhoni Waterfalls",4.6,1
+Palakkad Spot 4,Palakkad,Heritage & Valley,Warm & Breezy,4416,77,"Malampuzha Dam, Nelliyampathy Hills, Silent Valley, Dhoni Waterfalls",4.6,1
+Marari Beach,Alappuzha,Beach & Coastal,Sea Breeze Tropical,6500,71,"Marari Beachfront, Traditional Coir Making, Sea Turtle Hatchery",4.7,1
+Marari Beach Spot 1,Alappuzha,Beach & Coastal,Sea Breeze Tropical,7020,75,"Marari Beachfront, Traditional Coir Making, Sea Turtle Hatchery",4.7,1
+Marari Beach Spot 2,Alappuzha,Beach & Coastal,Sea Breeze Tropical,7020,71,"Marari Beachfront, Traditional Coir Making, Sea Turtle Hatchery",4.6,1
+Marari Beach Spot 3,Alappuzha,Beach & Coastal,Sea Breeze Tropical,5980,75,"Marari Beachfront, Traditional Coir Making, Sea Turtle Hatchery",4.7,1
+Marari Beach Spot 4,Alappuzha,Beach & Coastal,Sea Breeze Tropical,7020,75,"Marari Beachfront, Traditional Coir Making, Sea Turtle Hatchery",4.7,1
+Nelliyampathy,Palakkad,Hill Station,Misty & Chill,5200,68,"Kesavampara View, Seethargundu 1000m Drop, Organic Orange Orchards",4.6,1
+Nelliyampathy Spot 1,Palakkad,Hill Station,Misty & Chill,4420,66,"Kesavampara View, Seethargundu 1000m Drop, Organic Orange Orchards",4.6,1
+Nelliyampathy Spot 2,Palakkad,Hill Station,Misty & Chill,4784,71,"Kesavampara View, Seethargundu 1000m Drop, Organic Orange Orchards",4.6,1
+Nelliyampathy Spot 3,Palakkad,Hill Station,Misty & Chill,4784,64,"Kesavampara View, Seethargundu 1000m Drop, Organic Orange Orchards",4.7,1
+Nelliyampathy Spot 4,Palakkad,Hill Station,Misty & Chill,4420,67,"Kesavampara View, Seethargundu 1000m Drop, Organic Orange Orchards",4.6,1
+Varkala,Thiruvananthapuram,Beach & Cliff,Coastal Warm,7800,88,"Varkala Cliff, Papanasam Beach, Janardhana Swami Temple, Watersports",4.7,1
+Varkala Spot 1,Thiruvananthapuram,Beach & Cliff,Coastal Warm,6630,90,"Varkala Cliff, Papanasam Beach, Janardhana Swami Temple, Watersports",4.7,1
+Varkala Spot 2,Thiruvananthapuram,Beach & Cliff,Coastal Warm,8424,89,"Varkala Cliff, Papanasam Beach, Janardhana Swami Temple, Watersports",4.7,1
+Varkala Spot 3,Thiruvananthapuram,Beach & Cliff,Coastal Warm,7176,87,"Varkala Cliff, Papanasam Beach, Janardhana Swami Temple, Watersports",4.8,1
+Varkala Spot 4,Thiruvananthapuram,Beach & Cliff,Coastal Warm,6630,88,"Varkala Cliff, Papanasam Beach, Janardhana Swami Temple, Watersports",4.8,1
+Kozhikode,Kozhikode,Heritage & Food,Coastal Humid,5000,82,"Kappad Beach, SM Street, Kozhikode Halwa, Beypore Port, Mananchira",4.5,0
+Kozhikode Spot 1,Kozhikode,Heritage & Food,Coastal Humid,5400,78,"Kappad Beach, SM Street, Kozhikode Halwa, Beypore Port, Mananchira",4.4,0
+Kozhikode Spot 2,Kozhikode,Heritage & Food,Coastal Humid,4600,80,"Kappad Beach, SM Street, Kozhikode Halwa, Beypore Port, Mananchira",4.5,0
+Kozhikode Spot 3,Kozhikode,Heritage & Food,Coastal Humid,4250,85,"Kappad Beach, SM Street, Kozhikode Halwa, Beypore Port, Mananchira",4.4,0
+Kozhikode Spot 4,Kozhikode,Heritage & Food,Coastal Humid,5750,80,"Kappad Beach, SM Street, Kozhikode Halwa, Beypore Port, Mananchira",4.5,0
+Bekal,Kasaragod,Beach & Fort,Tropical Coastal,6200,79,"Bekal Fort, Bekal Beach Park, Kappil Beach, Chandragiri Fort",4.6,1
+Bekal Spot 1,Kasaragod,Beach & Fort,Tropical Coastal,6696,83,"Bekal Fort, Bekal Beach Park, Kappil Beach, Chandragiri Fort",4.7,1
+Bekal Spot 2,Kasaragod,Beach & Fort,Tropical Coastal,5704,81,"Bekal Fort, Bekal Beach Park, Kappil Beach, Chandragiri Fort",4.5,1
+Bekal Spot 3,Kasaragod,Beach & Fort,Tropical Coastal,5270,78,"Bekal Fort, Bekal Beach Park, Kappil Beach, Chandragiri Fort",4.6,1
+Bekal Spot 4,Kasaragod,Beach & Fort,Tropical Coastal,7129,81,"Bekal Fort, Bekal Beach Park, Kappil Beach, Chandragiri Fort",4.7,1
