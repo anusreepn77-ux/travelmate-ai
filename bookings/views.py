@@ -7,6 +7,21 @@ from .models import TravelPackage, Booking, DocumentReminder
 from destinations.models import Destination
 from recomendations.ml_engine import calculate_route_matrix
 
+
+def _deduplicate_services(services):
+    unique_services = []
+    seen = set()
+    for service in services:
+        identity = (
+            service['type'].strip().casefold(),
+            service['name'].strip().casefold(),
+        )
+        if identity not in seen:
+            seen.add(identity)
+            unique_services.append(service)
+    return unique_services
+
+
 @login_required
 def book_package(request, package_id):
     package = get_object_or_404(TravelPackage, pk=package_id)
@@ -115,8 +130,8 @@ def nearby_places(request):
     Utility Feature A: Nearby Places Finder
     Restaurants, hospitals, pharmacies, ATMs, and emergency services for Kerala destinations.
     """
-    dest_name = request.GET.get('dest', 'Munnar')
-    place_type = request.GET.get('type', 'all')
+    requested_dest = request.GET.get('dest', 'Munnar').strip()
+    place_type = request.GET.get('type', 'all').strip()
 
     services_data = {
         'Munnar': [
@@ -142,11 +157,15 @@ def nearby_places(request):
         ]
     }
 
-    selected_services = services_data.get(dest_name, services_data['Munnar'])
-    if place_type != 'all':
-        selected_services = [s for s in selected_services if s['type'].lower() == place_type.lower()]
+    dest_name = requested_dest if requested_dest in services_data else ''
+    selected_services = _deduplicate_services(services_data.get(dest_name, []))
+    if place_type.casefold() != 'all':
+        selected_services = [
+            service for service in selected_services
+            if service['type'].casefold() == place_type.casefold()
+        ]
 
-    all_dests = ['Munnar', 'Alappuzha', 'Wayanad']
+    all_dests = list(services_data)
 
     return render(
         request,

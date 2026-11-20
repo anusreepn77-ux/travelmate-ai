@@ -47,8 +47,23 @@ def assistant_hub(request):
     # Tool 1: ML Destination Recommender (KNN + TF-IDF)
     recommendations = recommend_destinations(user_interests, preferred_climate, budget, preferred_category)
 
+    all_destinations = []
+    seen_destinations = set()
+    for destination in Destination.objects.order_by('name', 'district'):
+        identity = (destination.name.strip().casefold(), destination.district.strip().casefold())
+        if identity not in seen_destinations:
+            seen_destinations.add(identity)
+            all_destinations.append(destination)
+
+    requested_dest = request.GET.get('dest', '').strip()
+    active_destination = next(
+        (destination for destination in all_destinations
+         if destination.name.casefold() == requested_dest.casefold()),
+        all_destinations[0] if all_destinations else None,
+    )
+    selected_dest = active_destination.name if active_destination else ''
+
     # Tool 2 & Spotlight: AI Trip Planner / 48-Hour Generator
-    selected_dest = request.GET.get('dest', 'Munnar')
     itinerary = generate_ai_trip_plan(selected_dest, days=3, budget=budget)
 
     # Tool 3: Best Time to Visit Predictor (Random Forest & Decision Tree)
@@ -65,25 +80,40 @@ def assistant_hub(request):
     sentiment = analyze_review_sentiment(sample_review)
 
     # Tool 7: AI Cost Optimizer (ML Regressor + Gemini Tips)
-    cost_optimization = optimize_travel_cost(destination_name=selected_dest, package_price=18400.0, days=4, travelers=2)
+    cost_optimization = optimize_travel_cost(
+        destination_name=selected_dest,
+        package_price=active_destination.average_budget if active_destination else budget,
+        days=4,
+        travelers=2,
+    )
 
     # Tool 8: AI Outfit & Packing Stylist (Gemini API)
-    outfits = get_outfit_recommendations(selected_dest)
+    outfits = get_outfit_recommendations(
+        selected_dest,
+        destination_category=active_destination.category if active_destination else '',
+        destination_climate=active_destination.climate if active_destination else '',
+    )
 
     # Tool 9: Malayalam Dialect Voice AI
     custom_phrase = request.GET.get('phrase', '')
-    translations = get_malayalam_translations(custom_phrase)
+    translations = get_malayalam_translations(
+        custom_phrase,
+        destination_name=selected_dest,
+        destination_highlight=active_destination.highlights if active_destination else '',
+        destination_category=active_destination.category if active_destination else '',
+    )
 
     # Tool 10: Sustainable Travel Footprint
     carbon = calculate_carbon_footprint(days=4)
 
     # Tool 11: Safety Score Radar
-    safety = get_safety_radar(selected_dest)
+    safety = get_safety_radar(
+        active_destination.district if active_destination else selected_dest,
+        safety_rating=active_destination.safety_score if active_destination else 0,
+    )
 
     # Utility: Multi-Destination Route Matrix
     route = calculate_route_matrix(['Alappuzha', 'Athirappilly', 'Munnar', 'Thekkady'])
-
-    all_destinations = Destination.objects.all()
 
     return render(
         request,
@@ -92,6 +122,7 @@ def assistant_hub(request):
             'active_tab': active_tab,
             'selected_dest': selected_dest,
             'all_destinations': all_destinations,
+            'active_destination': active_destination,
             'recommendations': recommendations,
             'itinerary': itinerary,
             'climate_info': climate_info,

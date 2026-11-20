@@ -9,6 +9,7 @@ urlpatterns = [
 
     # Admin Dashboard Routes
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/destinations/', views.admin_destinations, name='admin_destinations'),
     path('admin-dashboard/add-destination/', views.add_destination, name='add_destination'),
     path('admin-dashboard/edit-destination/<int:pk>/', views.edit_destination, name='edit_destination'),
     path('admin-dashboard/delete-destination/<int:pk>/', views.delete_destination, name='delete_destination'),

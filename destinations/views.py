@@ -8,6 +8,7 @@ from bookings.models import TravelPackage, Booking
 from accounts.models import UserProfile, TravelPreference
 from django.contrib.auth.models import User
 from recomendations.ml_engine import predict_best_time, get_safety_radar, analyze_review_sentiment
+from .forms import DestinationImageForm
 
 def staff_required(view_func):
     """Decorator ensuring only staff/admin users access administrative portals."""
@@ -99,6 +100,21 @@ def destination_list(request):
             'all_climates': all_climates,
             'user_wishlist': user_wishlist,
             'total_count': destinations.count()
+        }
+    )
+
+@staff_required
+def admin_destinations(request):
+    """Show the destination catalog within the admin control center."""
+    destinations = Destination.objects.annotate(
+        package_count=Count('packages')
+    ).order_by('name')
+    return render(
+        request,
+        'admin_dashboard/destinations.html',
+        {
+            'destinations': destinations,
+            'total_destinations': destinations.count(),
         }
     )
 
@@ -212,7 +228,16 @@ def admin_dashboard(request):
 @staff_required
 def add_destination(request):
     """Admin: Add destination."""
+    image_form = DestinationImageForm()
     if request.method == 'POST':
+        image_form = DestinationImageForm(request.POST, request.FILES)
+        if not image_form.is_valid():
+            return render(
+                request,
+                'admin_dashboard/add_destination.html',
+                {'image_form': image_form}
+            )
+
         name = request.POST.get('name')
         district = request.POST.get('district')
         category = request.POST.get('category')
@@ -221,7 +246,6 @@ def add_destination(request):
         highlights = request.POST.get('highlights', '')
         climate = request.POST.get('climate', 'Cool & Pleasant')
         is_hidden_gem = request.POST.get('is_hidden_gem') == 'on'
-        image_url = request.POST.get('image_url', '')
 
         Destination.objects.create(
             name=name,
@@ -232,18 +256,35 @@ def add_destination(request):
             highlights=highlights,
             climate=climate,
             is_hidden_gem=is_hidden_gem,
-            image_url=image_url
+            image=image_form.cleaned_data.get('image')
         )
         messages.success(request, f"Destination '{name}' created successfully!")
         return redirect('admin_dashboard')
 
-    return render(request, 'admin_dashboard/add_destination.html')
+    return render(
+        request,
+        'admin_dashboard/add_destination.html',
+        {'image_form': image_form}
+    )
 
 @staff_required
 def edit_destination(request, pk):
     """Admin: Edit destination."""
     destination = get_object_or_404(Destination, pk=pk)
+    image_form = DestinationImageForm()
     if request.method == 'POST':
+        image_form = DestinationImageForm(request.POST, request.FILES)
+        if not image_form.is_valid():
+            return render(
+                request,
+                'admin_dashboard/add_destination.html',
+                {
+                    'destination': destination,
+                    'edit_mode': True,
+                    'image_form': image_form,
+                }
+            )
+
         destination.name = request.POST.get('name')
         destination.district = request.POST.get('district')
         destination.category = request.POST.get('category')
@@ -252,13 +293,22 @@ def edit_destination(request, pk):
         destination.highlights = request.POST.get('highlights', '')
         destination.climate = request.POST.get('climate', destination.climate)
         destination.is_hidden_gem = request.POST.get('is_hidden_gem') == 'on'
-        if request.POST.get('image_url'):
-            destination.image_url = request.POST.get('image_url')
+        uploaded_image = image_form.cleaned_data.get('image')
+        if uploaded_image:
+            destination.image = uploaded_image
         destination.save()
         messages.success(request, f"Destination '{destination.name}' updated successfully!")
         return redirect('admin_dashboard')
 
-    return render(request, 'admin_dashboard/add_destination.html', {'destination': destination, 'edit_mode': True})
+    return render(
+        request,
+        'admin_dashboard/add_destination.html',
+        {
+            'destination': destination,
+            'edit_mode': True,
+            'image_form': image_form,
+        }
+    )
 
 @staff_required
 def delete_destination(request, pk):

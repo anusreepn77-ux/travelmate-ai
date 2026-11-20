@@ -55,70 +55,46 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
                 <strong class="small text-muted d-block">ACTIVE DESTINATION CONTEXT:</strong>
-                <span class="fs-5 fw-bold text-primary"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ selected_dest }}, Kerala</span>
+                <span class="fs-5 fw-bold text-primary">
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                    {% if active_destination %}{{ selected_dest }}, Kerala{% else %}No destinations available{% endif %}
+                </span>
             </div>
             <div class="d-flex gap-2">
-                <a href="?dest=Munnar&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Munnar' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Munnar</a>
-                <a href="?dest=Alappuzha&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Alappuzha' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Alappuzha</a>
-                <a href="?dest=Wayanad&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Wayanad' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Wayanad</a>
-                <a href="?dest=Vagamon&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == 'Vagamon' %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">Vagamon</a>
+                {% for destination in all_destinations %}
+                <a href="?dest={{ destination.name|urlencode }}&tab={{ active_tab }}" class="btn btn-sm {% if selected_dest == destination.name %}btn-tm-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+                    {{ destination.name }}
+                </a>
+                {% empty %}
+                <span class="text-muted small">Add destinations to the catalog to use the AI tools.</span>
+                {% endfor %}
             </div>
         </div>
     </div>
 
-    <!-- Spotlight Feature: Munnar 48-Hour Generator (Figma Screen 3 Spotlight) -->
-    {% if active_tab == 'all' or active_tab == 'planning' %}
+    <!-- Selected Destination Overview -->
+    {% if active_destination and active_tab == 'all' or active_destination and active_tab == 'planning' %}
     <div class="tm-card p-4 mb-4 shadow-sm" style="border-left: 5px solid var(--tm-accent);">
         <div class="d-flex justify-content-between align-items-start mb-3">
             <div>
                 <span class="badge bg-info-subtle text-info fw-bold px-3 py-1 rounded-pill mb-2">
-                    <i class="bi bi-star-fill text-warning me-1"></i>INTERACTIVE SPOTLIGHT
+                    <i class="bi bi-geo-alt-fill me-1"></i>SELECTED DESTINATION
                 </span>
-                <h4 class="fw-bold mb-1">{{ selected_dest }} 48-Hour Generator</h4>
-                <p class="text-muted small mb-0">Two-day high-density expedition circuit optimized for sunrise peaks, minimal road congestion, and local tea trails.</p>
-            </div>
-            <div class="text-end">
-                <button class="btn btn-tm-accent btn-sm rounded-pill px-3" onclick="window.print()">
-                    <i class="bi bi-download me-1"></i>Export Plan
-                </button>
+                <h4 class="fw-bold mb-1">{{ active_destination.name }}</h4>
+                <p class="text-muted small mb-0">{{ active_destination.description|default:"No destination description has been added yet." }}</p>
             </div>
         </div>
 
-        <div class="timeline-track mt-4">
-            <div class="timeline-item">
-                <span class="timeline-dot"></span>
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <strong class="text-primary small">06:00 AM - 09:30 AM</strong>
-                    <span class="badge bg-success-subtle text-success fw-bold">₹1,400</span>
-                </div>
-                <div class="fw-bold fs-6">Kolukkumalai Sunrise 4x4 Safari & Tea Tasting</div>
-                <p class="text-muted small mb-0">Jeep trail through organic tea terraces. Spectacular cloud bed horizon view.</p>
-            </div>
-
-            <div class="timeline-item">
-                <span class="timeline-dot"></span>
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <strong class="text-primary small">10:30 AM - 01:30 PM</strong>
-                    <span class="badge bg-success-subtle text-success fw-bold">₹300</span>
-                </div>
-                <div class="fw-bold fs-6">Eravikulam Alpine Track & Nilgiri Tahr Watch</div>
-                <p class="text-muted small mb-0">Protected high-altitude biodiversity sanctuary. Advance forest e-pass required.</p>
-            </div>
-
-            <div class="timeline-item">
-                <span class="timeline-dot"></span>
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <strong class="text-primary small">04:00 PM - 06:30 PM</strong>
-                    <span class="badge bg-secondary-subtle text-secondary fw-bold">Free</span>
-                </div>
-                <div class="fw-bold fs-6">Pothamedu Sunset Deck & Twilight Photography</div>
-                <p class="text-muted small mb-0">Overlook tea, coffee, and cardamom estates with rolling evening fog.</p>
-            </div>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-light text-dark border">{{ active_destination.district }}</span>
+            <span class="badge bg-light text-dark border">{{ active_destination.category }}</span>
+            <span class="badge bg-light text-dark border">{{ active_destination.climate|default:"Climate not listed" }}</span>
+            <span class="badge bg-light text-dark border">Best time: {{ active_destination.best_month|default:"Not listed" }}</span>
+            <span class="badge bg-light text-dark border">Typical budget: ₹{{ active_destination.average_budget|floatformat:0 }}</span>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top bg-light p-3 rounded-3">
-            <span class="fw-semibold small text-muted">Estimated Day Spend: <strong>₹5,200 / day</strong></span>
-            <span class="badge bg-success px-3 py-1">Paced For Solo & Couples</span>
+        <div class="small text-secondary">
+            <strong>Highlights:</strong> {{ active_destination.highlights|default:"No destination highlights have been added yet." }}
         </div>
     </div>
     {% endif %}
@@ -191,7 +167,11 @@
                         {% for slot in day.slots|slice:":2" %}
                         <div class="d-flex justify-content-between small text-secondary py-1 border-bottom">
                             <span><i class="bi bi-clock me-1 text-info"></i>{{ slot.time }} - {{ slot.activity|truncatewords:5 }}</span>
+                            {% if slot.cost != None %}
                             <span class="fw-semibold">₹{{ slot.cost }}</span>
+                            {% else %}
+                            <span class="text-muted">Price not listed</span>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -440,7 +420,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-muted small mb-3">Offline-ready contextual translation capturing nuances, polite bargaining, and dietary allergy alerts.</p>
+                <p class="text-muted small mb-3">Travel phrases for {{ selected_dest }} attractions and activities.</p>
 
                 <div class="bg-light p-3 rounded-3 mb-2">
                     {% for t in translations|slice:":3" %}

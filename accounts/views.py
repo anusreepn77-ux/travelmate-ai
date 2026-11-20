@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Sum
+from django.utils import timezone
 from .forms import CustomUserCreationForm
 from .models import TravelPreference, UserProfile, Notification
 from destinations.models import Destination, Wishlist
@@ -60,35 +62,67 @@ def user_dashboard(request):
     AI Recommended destinations, 'Ask TravelMate AI' interactive widget,
     and active Booking voucher with QR code.
     """
-    profile, _ = UserProfile.objects.get_or_create(
-        user=request.user,
-        defaults={'total_spent': 14200.0, 'budget_limit': 25000.0}
-    )
     preference, _ = TravelPreference.objects.get_or_create(
         user=request.user,
         defaults={'interests': 'Nature, High Altitude Trekking', 'preferred_climate': 'Cool', 'budget': 15000.0, 'preferred_category': 'Hill Station'}
     )
 
-    # Active upcoming booking
-    upcoming_booking = Booking.objects.filter(user=request.user).order_by('-created_at').first()
-    if not upcoming_booking:
-        upcoming_booking = Booking.objects.order_by('-created_at').first()
+    upcoming_booking = (
+        Booking.objects.filter(
+            user=request.user,
+            status__in=['Confirmed', 'Pending'],
+            travel_date__gte=timezone.localdate(),
+        )
+        .select_related('package', 'destination', 'package__destination')
+        .order_by('travel_date', '-created_at')
+        .first()
+    )
 
-    featured_destinations = Destination.objects.filter(is_hidden_gem=False).order_by('-popularity_score')[:4]
+    all_destinations = []
+    seen_destinations = set()
+    for destination in Destination.objects.order_by('-popularity_score', 'name'):
+        identity = (destination.name.strip().casefold(), destination.district.strip().casefold())
+        if identity not in seen_destinations:
+            seen_destinations.add(identity)
+            all_destinations.append(destination)
+
+    total_destinations = len(all_destinations)
+    featured_destinations = [
+        destination for destination in all_destinations
+        if not destination.is_hidden_gem
+    ][:4]
+    featured_keys = {
+        (destination.name.strip().casefold(), destination.district.strip().casefold())
+        for destination in featured_destinations
+    }
 
     # Get ML Recommendations for the user
-    ai_recommendations = recommend_destinations(
+    recommended_destinations = recommend_destinations(
         user_interests=preference.interests,
         preferred_climate=preference.preferred_climate,
         budget=preference.budget,
         preferred_category=preference.preferred_category,
         top_n=3
     )
+    ai_recommendations = []
+    seen_recommendations = set(featured_keys)
+    for recommendation in recommended_destinations:
+        destination = recommendation['destination']
+        identity = (destination.name.strip().casefold(), destination.district.strip().casefold())
+        if identity not in seen_recommendations:
+            seen_recommendations.add(identity)
+            ai_recommendations.append(recommendation)
 
-    # Calculate expense pool percentage
-    limit = profile.budget_limit or 25000.0
-    spent = profile.total_spent or 14200.0
-    spent_pct = int(min(100, (spent / limit) * 100))
+    limit = preference.budget
+    booked_total = (
+        Booking.objects.filter(
+            user=request.user,
+            status__in=['Confirmed', 'Completed'],
+        ).aggregate(total=Sum('total_amount'))['total']
+        or 0
+    )
+    spent_pct = int(min(100, (booked_total / limit) * 100)) if limit > 0 else 0
+    safe_margin = max(limit - booked_total, 0)
 
     # Unread notifications
     unread_notifs = Notification.objects.filter(user=request.user, is_read=False).count()
@@ -97,14 +131,15 @@ def user_dashboard(request):
         request,
         'user/dashboard.html',
         {
-            'profile': profile,
             'preference': preference,
             'upcoming_booking': upcoming_booking,
             'featured_destinations': featured_destinations,
+            'total_destinations': total_destinations,
             'ai_recommendations': ai_recommendations,
             'spent_pct': spent_pct,
-            'spent': spent,
+            'booked_total': booked_total,
             'limit': limit,
+            'safe_margin': safe_margin,
             'unread_notifs': unread_notifs,
         }
     )

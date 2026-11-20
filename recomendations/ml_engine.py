@@ -168,46 +168,66 @@ def generate_ai_trip_plan(destination_name='Munnar', days=3, budget=15000, trave
         except Exception as e:
             print(f"Error parsing Gemini itinerary: {e}")
 
-    # High fidelity fallback matching Figma Screen 3
+    destination = Destination.objects.filter(name__iexact=destination_name).first()
+    activity_items = []
+    if destination:
+        for activity in destination.activities.order_by('name'):
+            activity_items.append({
+                'activity': activity.name,
+                'cost': activity.price,
+                'badge': activity.activity_type,
+            })
+
+        if not activity_items:
+            highlights = [
+                highlight.strip()
+                for highlight in destination.highlights.split(',')
+                if highlight.strip()
+            ]
+            seen_highlights = set()
+            for highlight in highlights:
+                identity = highlight.casefold()
+                if identity not in seen_highlights:
+                    seen_highlights.add(identity)
+                    activity_items.append({
+                        'activity': highlight,
+                        'cost': None,
+                        'badge': destination.category,
+                    })
+
+    safe_days = max(1, int(days))
+    items_per_day = max(1, (len(activity_items) + safe_days - 1) // safe_days)
+    daily_slots = []
+    times = ['08:00 AM - 11:00 AM', '12:00 PM - 03:00 PM', '04:00 PM - 06:00 PM']
+    for day_index in range(safe_days):
+        day_items = activity_items[day_index * items_per_day:(day_index + 1) * items_per_day]
+        if not day_items:
+            continue
+        slots = [
+            {
+                'time': times[index % len(times)],
+                **item,
+            }
+            for index, item in enumerate(day_items)
+        ]
+        daily_slots.append({
+            'day': day_index + 1,
+            'title': f"{destination_name} highlights",
+            'slots': slots,
+        })
+
     return {
         'destination': destination_name,
-        'days_count': days,
+        'days_count': safe_days,
         'estimated_budget': budget,
-        'daily_slots': [
-            {
-                'day': 1,
-                'title': 'Highland Vistas & Tea Estate Heritage',
-                'slots': [
-                    {'time': '06:00 AM - 09:30 AM', 'activity': 'Kolukkumalai Sunrise 4x4 Safari & Tea Plucking', 'cost': 1400, 'badge': 'Highlight'},
-                    {'time': '10:30 AM - 01:30 PM', 'activity': 'Eravikulam National Park Alpine Nilgiri Tahr Trail', 'cost': 300, 'badge': 'Eco'},
-                    {'time': '01:30 PM - 02:45 PM', 'activity': 'Authentic Kerala Sadhya at Clay Oven Restaurant', 'cost': 450, 'badge': 'Dining'},
-                    {'time': '04:00 PM - 06:30 PM', 'activity': 'Pothamedu Sunset Deck & Twilight Photography', 'cost': 0, 'badge': 'Free'}
-                ],
-                'day_total': 2150
-            },
-            {
-                'day': 2,
-                'title': 'Lakes, Spice Groves & Cultural Evenings',
-                'slots': [
-                    {'time': '08:30 AM - 11:45 AM', 'activity': 'Mattupetty Reservoir Speedboating & Echo Point Echoes', 'cost': 600, 'badge': 'Scenic'},
-                    {'time': '12:30 PM - 03:30 PM', 'activity': 'Organic Spice Plantation Guided Botanical Tour', 'cost': 350, 'badge': 'Educational'},
-                    {'time': '05:30 PM - 07:30 PM', 'activity': 'Kathakali & Kalaripayattu Martial Arts Performance', 'cost': 500, 'badge': 'Culture'}
-                ],
-                'day_total': 1450
-            },
-            {
-                'day': 3,
-                'title': 'Misty Ridges & Cascades',
-                'slots': [
-                    {'time': '08:00 AM - 11:30 AM', 'activity': 'Attukal Waterfalls Trek & Hanging Bridge Crossing', 'cost': 200, 'badge': 'Adventure'},
-                    {'time': '12:30 PM - 03:00 PM', 'activity': 'Tata Tea Museum & Tea Tasting Workshop', 'cost': 250, 'badge': 'Workshop'},
-                    {'time': '04:30 PM - 06:00 PM', 'activity': 'Local Munnar Spice & Handcrafted Chocolate Souvenir Market', 'cost': 800, 'badge': 'Shopping'}
-                ],
-                'day_total': 1250
-            }
-        ],
-        'total_activity_cost': 4850,
-        'summary': f"Synthesized {days}-day plan for {destination_name} balancing scenic viewpoints, local cuisine, and comfortable pacing."
+        'daily_slots': daily_slots,
+        'total_activity_cost': sum(
+            item['cost'] for item in activity_items if item['cost'] is not None
+        ),
+        'summary': (
+            f"Suggested highlights for {destination_name}, based on the destination's "
+            "saved activities and highlights. Prices are shown only when provided."
+        ),
     }
 
 
@@ -262,19 +282,24 @@ def predict_best_time(destination_name='Munnar'):
         if label == "Peak":
             peak_months.append(mname)
 
-    best_period = f"{peak_months[0]} to {peak_months[-1]}" if peak_months else "October to March"
+    destination = Destination.objects.filter(name__iexact=destination_name).first()
+    model_best_period = f"{peak_months[0]} to {peak_months[-1]}" if peak_months else "Not available"
+    best_period = destination.best_month if destination else model_best_period
 
     return {
         'destination': destination_name,
         'best_months': best_period,
-        'season_type': 'Peak Tourism Season (Cool & Dry)',
-        'temp_range': '14°C - 24°C',
-        'rainfall_risk': 'Low / Minimal',
-        'crowd_index': 'High (85% Occupancy)',
-        'landslide_hazard': 'Safe - Clear Highway Pass',
+        'season_type': destination.climate if destination else 'Not recorded',
+        'temp_range': destination.climate if destination else 'Not recorded',
+        'rainfall_risk': 'Not recorded',
+        'crowd_index': destination.crowd_density if destination else 'Not recorded',
+        'landslide_hazard': 'Check current local advisories',
         'monthly_scores': monthly_scores,
         'model_used': 'Random Forest Classifier & Decision Tree (Scikit-learn)',
-        'advice': f"Best visiting window for {destination_name} is {best_period}. Enjoy clear mountain views, optimal outdoor trekking permits, and pleasant weather."
+        'advice': (
+            f"The destination listing recommends {best_period} for {destination_name}. "
+            "Check local weather and access updates before travelling."
+        ),
     }
 
 
@@ -407,13 +432,9 @@ def optimize_travel_cost(destination_name='Munnar', package_price=18400.0, days=
             print(f"Cost prediction error: {e}")
 
     # Compute comparative cost savings
-    resort_stay = days * 4500
-    homestay_stay = days * 1800
-    stay_savings = resort_stay - homestay_stay
-
-    private_cab = days * 3200
-    public_transport = days * 750
-    transport_savings = private_cab - public_transport
+    stay_savings = int(predicted_cost * 0.15)
+    transport_savings = int(predicted_cost * 0.10)
+    sightseeing_savings = int(predicted_cost * 0.05)
 
     total_original = int(predicted_cost * 1.25)
     total_optimized = int(predicted_cost * 0.78)
@@ -433,11 +454,11 @@ def optimize_travel_cost(destination_name='Munnar', package_price=18400.0, days=
         'optimized_cost': total_optimized,
         'total_savings': total_savings,
         'savings_percent': savings_percent,
-        'ai_tip': gemini_tip or f"Book KSRTC Low-floor AC buses and certified estate homestays in {destination_name} to save up to 34%.",
+        'ai_tip': gemini_tip or f"Compare local stays and public transport in {destination_name} to manage your trip budget.",
         'recommendations': [
-            {'category': 'Stay', 'option': 'Heritage Tea Estate Homestay vs 5-Star Resort', 'savings': f"₹{stay_savings}"},
-            {'category': 'Transit', 'option': 'KSRTC AC Low-Floor Bus vs Private Taxi', 'savings': f"₹{transport_savings}"},
-            {'category': 'Sightseeing', 'option': 'Kerala Tourism Combo Pass (Eravikulam + Mattupetty)', 'savings': '₹900'}
+            {'category': 'Stay', 'option': f"Local homestay vs resort in {destination_name}", 'savings': f"₹{stay_savings}"},
+            {'category': 'Transit', 'option': f"Public transport vs private taxi in {destination_name}", 'savings': f"₹{transport_savings}"},
+            {'category': 'Sightseeing', 'option': f"Compare attraction bundles in {destination_name}", 'savings': f"₹{sightseeing_savings}"}
         ]
     }
 
@@ -445,14 +466,19 @@ def optimize_travel_cost(destination_name='Munnar', package_price=18400.0, days=
 # =====================================================================
 # FEATURE 8: AI OUTFIT RECOMMENDATION (Gemini API + Weather Context)
 # =====================================================================
-def get_outfit_recommendations(destination_name='Munnar'):
+def get_outfit_recommendations(
+    destination_name='Munnar',
+    destination_category='',
+    destination_climate='',
+):
     """
     Feature 8: AI Outfit & Packing Stylist
     Calls Gemini API with destination climate context or provides high-fidelity blueprint.
     """
     prompt = (
         f"You are TravelMate AI fashion & packing stylist. Give weather-appropriate outfit recommendations "
-        f"for a trip to {destination_name}, Kerala. Return JSON with keys: "
+        f"for a trip to {destination_name}, Kerala. Category: {destination_category}. "
+        f"Recorded climate: {destination_climate}. Return JSON with keys: "
         f'{{"weather_summary": "temp and conditions", "layers": ['
         f'{{"tier": "layer name", "items": "recommended clothing"}}], "accessories": ["item1", "item2"]}}'
     )
@@ -470,30 +496,57 @@ def get_outfit_recommendations(destination_name='Munnar'):
         except Exception:
             pass
 
+    category = destination_category.casefold()
+    if any(term in category for term in ('beach', 'coastal', 'backwater')):
+        layers = [
+            {'tier': 'Warm & Humid Weather', 'items': 'Lightweight breathable clothing and sun protection'},
+            {'tier': 'Rain Protection', 'items': 'Compact rain jacket or umbrella'},
+            {'tier': 'Waterfront Footwear', 'items': 'Non-slip sandals or shoes'},
+        ]
+        accessories = ['Sun hat', 'Sunscreen', 'Reusable water bottle', 'Waterproof pouch']
+    elif any(term in category for term in ('wildlife', 'forest', 'mountain', 'nature')):
+        layers = [
+            {'tier': 'Outdoor Layer', 'items': 'Quick-dry long sleeves and lightweight trousers'},
+            {'tier': 'Rain & Trail Protection', 'items': 'Rain shell and sturdy closed-toe shoes'},
+            {'tier': 'Field Etiquette', 'items': 'Muted colors and a small day pack'},
+        ]
+        accessories = ['Insect repellent', 'Reusable water bottle', 'Small first-aid kit', 'Binoculars']
+    else:
+        layers = [
+            {'tier': 'Comfort Layer', 'items': 'Comfortable light clothing with an extra warm layer'},
+            {'tier': 'Rain Protection', 'items': 'Compact rain jacket or umbrella'},
+            {'tier': 'Walking Footwear', 'items': 'Comfortable shoes with good grip'},
+        ]
+        accessories = ['Sun protection', 'Reusable water bottle', 'Light day pack']
+
     return {
         'destination': destination_name,
-        'weather_summary': '18°C Misty Chill, 15% Rain Probability',
-        'layers': [
-            {'tier': 'Highland Trekking Layer', 'items': 'Windproof Fleece Jacket + Breathable Quick-dry Cargo Pants'},
-            {'tier': 'Rain & Mist Protocol', 'items': 'Packable Lightweight Poncho / 20mm Waterproof Shell'},
-            {'tier': 'Footwear Spec', 'items': 'Vibram Sole / Mud-Traction Trail Grippers with Ankle Cushion'},
-            {'tier': 'Temple & Cultural Protocol', 'items': 'Traditional Cotton Mundu / Kasavu Shawl (modest dress code)'}
-        ],
-        'accessories': ['Polarized UV Sunglasses', 'Leech Socks (for forest trails)', 'Thermos Flask', 'Dry Bag']
+        'weather_summary': (
+            f"Recorded climate: {destination_climate}"
+            if destination_climate else 'Climate details are not recorded.'
+        ),
+        'layers': layers,
+        'accessories': accessories,
     }
 
 
 # =====================================================================
 # FEATURE 9: LOCAL LANGUAGE TRANSLATOR (Gemini API / Malayalam Engine)
 # =====================================================================
-def get_malayalam_translations(custom_phrase=None):
+def get_malayalam_translations(
+    custom_phrase=None,
+    destination_name='Munnar',
+    destination_highlight='',
+    destination_category='',
+):
     """
     Feature 9: Local Language Translator
     Translates phrases into Malayalam script and English phonetics using Gemini or built-in bank.
     """
     if custom_phrase and custom_phrase.strip():
         prompt = (
-            f"Translate this English travel phrase into Malayalam for a tourist in Kerala: '{custom_phrase}'. "
+            f"Translate this English travel phrase into Malayalam for a tourist visiting "
+            f"{destination_name}, Kerala ({destination_category}): '{custom_phrase}'. "
             f"Return JSON format: {{\"english\": \"{custom_phrase}\", \"malayalam\": \"മലയാളം\", \"transliteration\": \"Phonetic English\", \"context\": \"Usage note\"}}"
         )
         ai_resp = call_gemini_api(prompt)
@@ -508,43 +561,47 @@ def get_malayalam_translations(custom_phrase=None):
             except Exception:
                 pass
 
+    place_phrases = {
+        'munnar': [
+            ('ടീ മ്യൂസിയം എവിടെയാണ്?', 'Tea museum evideyaanu?', 'Where is the tea museum?', 'Ask for directions to Munnar Tea Museum.'),
+            ('പ്രാദേശിക ചായ രുചിക്കാമോ?', 'Pradeshika chaya ruchikkamo?', 'Can I taste local tea?', 'Useful at a local tea shop or tea estate.'),
+            ('ട്രെക്കിംഗ് പാത ഇന്ന് തുറന്നിട്ടുണ്ടോ?', 'Trekking paatha innu thurannittundo?', 'Is the trekking trail open today?', 'Check trail access before starting a Munnar trek.'),
+        ],
+        'alappuzha': [
+            ('ഹൗസ്‌ബോട്ടിൽ കയറാൻ എവിടെയാണ്?', 'Houseboattil kayaraan evideyaanu?', 'Where can I board the houseboat?', 'Ask at the Alappuzha houseboat boarding point.'),
+            ('ബോട്ട് യാത്ര എത്ര നേരമാണ്?', 'Boat yaathra ethra neramaanu?', 'How long is the boat trip?', 'Ask about the duration of a backwater cruise.'),
+            ('അടുത്ത് ഫെറി ഉണ്ടോ?', 'Aduthu ferry undo?', 'Is there a ferry nearby?', 'Ask about nearby public ferry services.'),
+        ],
+        'wayanad': [
+            ('ഈ പാത എവിടേക്കാണ് പോകുന്നത്?', 'Ee paatha evidekkaanu pokunnath?', 'Where does this trail lead?', 'Ask about the trail before walking in Wayanad.'),
+            ('പ്രാദേശിക ഗൈഡ് ലഭ്യമാണോ?', 'Pradeshika guide labhyamaano?', 'Is a local guide available?', 'Useful when arranging a local guide for a visit.'),
+            ('ഈ സ്ഥലം ഇന്ന് തുറന്നിട്ടുണ്ടോ?', 'Ee sthalam innu thurannittundo?', 'Is this place open today?', 'Confirm opening status before visiting an attraction.'),
+        ],
+        'vagamon': [
+            ('പാരാഗ്ലൈഡിംഗ് സ്ഥലം എവിടെയാണ്?', 'Paragliding sthalam evideyaanu?', 'Where is the paragliding point?', 'Ask for directions to the Vagamon paragliding site.'),
+            ('ജീപ്പ് വാടകയ്ക്ക് കിട്ടുമോ?', 'Jeep vaadakaykku kittumo?', 'Can I rent a jeep?', 'Ask about local jeep hire for hill routes.'),
+            ('പുൽമേടുകൾ എവിടെയാണ്?', 'Pulmedukal evideyaanu?', 'Where are the meadows?', 'Ask for directions to the Vagamon meadows.'),
+        ],
+    }
+
+    phrases = place_phrases.get(destination_name.casefold())
+    if phrases is None:
+        highlight = destination_highlight.split(',')[0].strip() if destination_highlight else ''
+        focus = highlight or destination_category or destination_name
+        phrases = [
+            ('വഴി പറഞ്ഞുതരുമോ?', 'Vazhi paranjutharumo?', f'How do I get to {focus}?', f'Ask for directions to {focus} in {destination_name}.'),
+            ('പ്രാദേശിക ഗൈഡ് ലഭ്യമാണോ?', 'Pradeshika guide labhyamaano?', f'Is a local guide available in {destination_name}?', f'Ask about local guides for {destination_name}.'),
+            ('ഈ സ്ഥലം ഇന്ന് തുറന്നിട്ടുണ്ടോ?', 'Ee sthalam innu thurannittundo?', f'Is this place open today in {destination_name}?', f'Confirm opening hours before visiting {destination_name}.'),
+        ]
+
     return [
         {
-            'malayalam': 'എത്രയായി?',
-            'transliteration': 'Ethra aayi?',
-            'english': 'How much does this cost?',
-            'context': 'Useful for local tea shops, markets, and auto-rickshaws.'
-        },
-        {
-            'malayalam': 'വഴി പറഞ്ഞുതരുമോ?',
-            'transliteration': 'Vazhi paranjutharumo?',
-            'english': 'Can you show me the way?',
-            'context': 'Polite phrase when seeking navigation help from locals.'
-        },
-        {
-            'malayalam': 'ഒരു ചായ കിട്ടുമോ?',
-            'transliteration': 'Oru chaya kittumo?',
-            'english': 'Can I get a hot cup of tea?',
-            'context': 'Essential for wayside Kerala Thattukada tea stalls.'
-        },
-        {
-            'malayalam': 'കാരം കുറവ് മതി',
-            'transliteration': 'Kaaram kuravu mathi',
-            'english': 'Please make it less spicy',
-            'context': 'Helpful when ordering traditional Kerala fish curry or biryani.'
-        },
-        {
-            'malayalam': 'നന്ദി, വളരെ സന്തോഷം!',
-            'transliteration': 'Nanni, valare santhosham!',
-            'english': 'Thank you, I am very happy!',
-            'context': 'Warm expression of gratitude to homestay hosts and drivers.'
-        },
-        {
-            'malayalam': 'ക്ഷേത്രത്തിൽ കയറാമോ?',
-            'transliteration': 'Kshethrathil kayaraamo?',
-            'english': 'May we enter the temple?',
-            'context': 'Polite inquiry regarding regional temple access regulations.'
+            'malayalam': malayalam,
+            'transliteration': transliteration,
+            'english': english,
+            'context': context,
         }
+        for malayalam, transliteration, english, context in phrases
     ]
 
 
@@ -578,7 +635,7 @@ def calculate_carbon_footprint(days=4, travel_mode='Hybrid Bus + Walking'):
 # =====================================================================
 # FEATURE 11: AI TRAVEL SAFETY SCORE (Data + Verified Contacts)
 # =====================================================================
-def get_safety_radar(district_name='Idukki'):
+def get_safety_radar(district_name='Idukki', safety_rating=96):
     """
     Feature 11: Safety Score & Emergency Radar
     Real-time safety indices and verified medical / police contacts.
@@ -586,7 +643,7 @@ def get_safety_radar(district_name='Idukki'):
     return {
         'district': district_name,
         'zone': f'{district_name} Tourist Patrol Zone',
-        'safety_rating': 96,
+        'safety_rating': safety_rating,
         'landslide_hazard': 'Low (Safe - Clear Roads)',
         'night_travel': 'Safe with fog lamps until 10:00 PM',
         'road_status': 'NH85 & State Highways open with active highway patrol',

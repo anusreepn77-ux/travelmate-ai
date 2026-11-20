@@ -254,10 +254,10 @@
             <div class="admin-nav-section">Inventory & Catalog</div>
             <ul class="admin-nav-item">
                 <li>
-                    <a href="{% url 'destination_list' %}" class="admin-nav-link">
+                    <a href="{% url 'admin_destinations' %}" class="admin-nav-link {% if request.resolver_match.url_name == 'admin_destinations' %}active{% endif %}">
                         <i class="bi bi-geo-alt"></i>
                         <span>View All Destinations</span>
-                        <span class="admin-nav-badge">12</span>
+                        <span class="admin-nav-badge">{{ total_destinations|default:0 }}</span>
                     </a>
                 </li>
                 <li>
@@ -292,13 +292,6 @@
                     <a href="{% url 'admin_reports' %}" class="admin-nav-link {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Reports & Sentiment</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/" target="_blank" class="admin-nav-link">
-                        <i class="bi bi-database-fill-gear"></i>
-                        <span>Django Superuser</span>
-                        <i class="bi bi-box-arrow-up-right ms-auto" style="font-size: 0.75rem;"></i>
                     </a>
                 </li>
             </ul>

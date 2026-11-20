@@ -53,35 +53,74 @@
             <div class="trip-monitor-card mb-4 shadow">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
+                        {% if upcoming_booking %}
                         <span class="badge bg-warning text-dark fw-bold px-2 py-1 rounded-pill mb-2">
-                            <i class="bi bi-clock-history me-1"></i>4 DAYS LEFT
+                            <i class="bi bi-clock-history me-1"></i>UPCOMING TRIP
                         </span>
-                        <h4 class="fw-bold mb-1">Munnar & Tea Hills Trek</h4>
-                        <p class="text-white-50 small mb-0">Starts Friday Oct 24 • 4 DAYS / 3 NIGHTS • Circuit: Tea Valley Top Station</p>
+                        <h4 class="fw-bold mb-1">
+                            {% if upcoming_booking.package %}
+                                {{ upcoming_booking.package.package_name }}
+                            {% elif upcoming_booking.destination %}
+                                {{ upcoming_booking.destination.name }} Trip
+                            {% else %}
+                                Kerala Trip
+                            {% endif %}
+                        </h4>
+                        <p class="text-white-50 small mb-0">
+                            {{ upcoming_booking.travel_date|date:"M d, Y" }} &bull;
+                            {{ upcoming_booking.number_of_people }} traveller{{ upcoming_booking.number_of_people|pluralize }}
+                            {% if upcoming_booking.package and upcoming_booking.package.destination %}
+                                &bull; {{ upcoming_booking.package.destination.name }}
+                            {% elif upcoming_booking.destination %}
+                                &bull; {{ upcoming_booking.destination.name }}
+                            {% endif %}
+                        </p>
+                        {% else %}
+                        <span class="badge bg-light text-dark fw-bold px-2 py-1 rounded-pill mb-2">
+                            <i class="bi bi-calendar-x me-1"></i>NO UPCOMING TRIP
+                        </span>
+                        <h4 class="fw-bold mb-1">No upcoming trips</h4>
+                        <p class="text-white-50 small mb-0">Your confirmed or pending trips will appear here.</p>
+                        {% endif %}
                     </div>
                     <div class="text-end">
+                        {% if upcoming_booking %}
                         <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill">
-                            <i class="bi bi-check-circle-fill me-1"></i>Confirmed
+                            {{ upcoming_booking.status }}
                         </span>
+                        {% endif %}
                     </div>
                 </div>
 
                 <!-- Trip Expense Pool Widget -->
                 <div class="bg-black bg-opacity-25 rounded-3 p-3 mt-3 border border-light border-opacity-10">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="small fw-semibold text-white-50"><i class="bi bi-wallet2 me-1"></i>Trip Expense Pool</span>
-                        <span class="small fw-bold text-info">Spent ₹{{ spent|floatformat:0 }} of Limit ₹{{ limit|floatformat:0 }} ({{ spent_pct }}%)</span>
+                        <span class="small fw-semibold text-white-50"><i class="bi bi-wallet2 me-1"></i>Travel Budget</span>
+                        <span class="small fw-bold text-info">Trip bookings ₹{{ booked_total|floatformat:0 }} of Budget ₹{{ limit|floatformat:0 }} ({{ spent_pct }}%)</span>
                     </div>
                     <div class="progress-tm">
                         <div class="progress-tm-bar" style="width: {{ spent_pct }}%;"></div>
                     </div>
                     <div class="d-flex justify-content-between text-white-50 small mt-2">
-                        <span>Safe Margin: ₹10,800 remaining</span>
+                        <span>Remaining budget: ₹{{ safe_margin|floatformat:0 }}</span>
                         <a href="{% url 'assistant_hub' %}?tab=budget" class="text-info text-decoration-none small fw-semibold">
                             Optimize Costs <i class="bi bi-chevron-right"></i>
                         </a>
                     </div>
                 </div>
+                {% if upcoming_booking %}
+                <div class="text-end mt-3">
+                    <a href="{% url 'voucher_detail' upcoming_booking.id %}" class="btn btn-sm btn-light rounded-pill px-3">
+                        View Booking Voucher
+                    </a>
+                </div>
+                {% else %}
+                <div class="text-end mt-3">
+                    <a href="{% url 'destination_list' %}" class="btn btn-sm btn-light rounded-pill px-3">
+                        Explore Destinations
+                    </a>
+                </div>
+                {% endif %}
             </div>
 
             <!-- Smart Expeditions: Quick Shortcut Tiles -->
@@ -157,7 +196,7 @@
             <!-- Featured Kerala Destinations -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0">Featured Kerala Destinations</h5>
-                <a href="{% url 'destination_list' %}" class="btn btn-sm btn-link text-decoration-none fw-semibold">View All (9) &rarr;</a>
+                <a href="{% url 'destination_list' %}" class="btn btn-sm btn-link text-decoration-none fw-semibold">View All ({{ total_destinations }}) &rarr;</a>
             </div>
 
             <div class="row g-3 mb-4">
@@ -235,62 +274,14 @@
         <!-- Right Column: Active Booking Voucher & Quick Stats -->
         <div class="col-lg-4">
 
-            <!-- Recent Booking Card with QR Code (Figma Screen 1) -->
-            <div class="tm-card p-3 mb-4 shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="badge bg-success-subtle text-success fw-bold px-2 py-1 rounded-pill">
-                        <i class="bi bi-shield-check me-1"></i>Confirmed Voucher
-                    </span>
-                    <span class="text-muted small fw-semibold">Voucher: TM-99412</span>
-                </div>
-
-                <div class="rounded-3 overflow-hidden position-relative mb-3">
-                    <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=600&q=80" alt="Resort" class="w-100" style="height: 140px; object-fit: cover;">
-                    <span class="position-absolute bottom-0 start-0 m-2 badge bg-dark bg-opacity-75 text-white small">
-                        Munnar Tea Valley
-                    </span>
-                </div>
-
-                <h6 class="fw-bold mb-1">Cloud Valley Plantation Retreat</h6>
-                <p class="text-muted small mb-2">Tea Valley Road, Munnar • Deluxe Mist Villa</p>
-
-                <div class="bg-light rounded-3 p-2 small mb-3">
-                    <div class="d-flex justify-content-between py-1 border-bottom">
-                        <span class="text-muted">Check-in:</span>
-                        <span class="fw-semibold">Oct 24, 02:00 PM</span>
-                    </div>
-                    <div class="d-flex justify-content-between py-1 border-bottom">
-                        <span class="text-muted">Guests:</span>
-                        <span class="fw-semibold">2 Adults (1 Room)</span>
-                    </div>
-                    <div class="d-flex justify-content-between py-1">
-                        <span class="text-muted">Total Paid:</span>
-                        <span class="fw-bold text-success">₹18,400</span>
-                    </div>
-                </div>
-
-                <!-- Digital QR Ticket Preview -->
-                <div class="text-center p-3 border rounded-3 bg-white mb-3">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=TravelMate-Voucher-TM-99412-Munnar-Rahul" alt="QR Voucher" width="100" height="100" class="img-fluid mb-2">
-                    <div class="text-muted" style="font-size: 0.72rem;">Scan for contactless check-in at retreat</div>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <a href="{% url 'voucher_detail' upcoming_booking.id|default:1 %}" class="btn btn-tm-primary btn-sm py-2">
-                        <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF Voucher
-                    </a>
-                    <a href="{% url 'destination_detail' 1 %}" class="btn btn-outline-secondary btn-sm py-2">
-                        View Property Details
-                    </a>
-                </div>
-            </div>
-
             <!-- Profile Summary & Preferences Snapshot -->
             <div class="tm-card p-3 shadow-sm">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" width="52" height="52" class="rounded-circle border border-2 border-info">
+                    <div class="rounded-circle border border-2 border-info d-flex align-items-center justify-content-center bg-light fw-bold text-primary" style="width: 52px; height: 52px;">
+                        {{ user.first_name|default:user.username|first|upper }}
+                    </div>
                     <div>
-                        <h6 class="fw-bold mb-0">{{ user.first_name|default:user.username }} Sharma</h6>
+                        <h6 class="fw-bold mb-0">{{ user.get_full_name|default:user.username }}</h6>
                         <span class="badge bg-info-subtle text-info small">{{ preference.travel_style|default:'Solo Explorer' }}</span>
                     </div>
                 </div>
